@@ -9,22 +9,23 @@ HYCU
 Overview
 ++++++++
 
-HYCU is the only solution built from the ground up to deliver a full suite of backup capabilities for Nutanix AHV and ESXi clusters, eliminating a key barrier to entry for AHV prospects. HYCU can be used to backup Nutanix VMs, Volumes, and Nutanix Files deployments.
+HYCU is the only solution built from the ground up to deliver a full suite of backup capabilities for Nutanix AHV and ESXi clusters. HYCU can be used to backup Nutanix VMs, Volumes, and Nutanix Files deployments.
 
 As pure software, HYCU can help grow Nutanix deals as additional nodes are positioned to act as a backup target for workloads.
 
-HYCU also fully supports non-Nutanix ESXi and Physical Windows Server environments, allowing customers migrating to Nutanix from legacy platforms a single backup solution. HYCU is able to backup the following Applications and File Services on Nutanix:
+HYCU also fully supports non-Nutanix ESXi and Physical Windows Server environments, allowing customers migrating to Nutanix from legacy platforms a single backup solution. HYCU is able to backup any application in a consistent manner using pre/post exec framework, and has special integration with the following Applications and File Services on Nutanix:
 
 - Microsoft SQL Server (including failover and Availability Groups)
 - Microsoft Exchange Server (including Database Availability Group (DAG))
 - Microsoft Active Directory
 - Oracle Database
-- Nutanix Files
-- Microsoft SQL Failover Cluster
+- Microsoft Failover Cluster
 - SAP HANA
+- Nutanix Files
 - Nutanix Volume Groups
+- A-sync and Near-sync snapshots
 
-HYCU can be bundled with Nutanix's Secondary Storage Offering, Nutanix Mine
+HYCU can be bundled with Nutanix's Secondary Storage Offering, Nutanix Mine.
 
 .. figure:: images/mine_hycu_logo.png
 
@@ -136,18 +137,24 @@ If the cluster on which the HYCU virtual appliance is being deployed is a Nutani
 Adding A Backup Target
 ++++++++++++++++++++++
 
-The target is used for storing backups coordinated by HYCU. HYCU supports:
-   - Nutanix
-   - iSCSI (including Nutanix Volumes)
+The target is used for storing backups coordinated by HYCU. HYCU supports following type of targets
+   - Nutanix (Nutanix specific iSCSI)
+   - iSCSI
    - NFS (including Nutanix Files)
    - SMB (including Nutanix Files)
    - AWS, S3 (including Nutanix Buckets)
    - Azure
    - Google Cloud Platform (GCP)
 
-In this exercise you will create a Nutanix Volume group to use as a target for VM backup data.
-   - In a Nutanix Mine environment, the HYCU appliance and target storage would reside on the same cluster.
-   - In a non-Mine production environment the HYCU appliance and target storage would not reside on the same cluster as the source VMs.
+In this exercise you will use Nutanix as a target for VM backup data. Nutanix can be utilized as target storage in two different ways, through Nutanix Volumes and Nutanix Objects.
+
+
+Configuring Nutanix Volumes as a Target
++++++++++++++++++++++++++++++++++++++++
+
+HYCU runs natively on Nutanix clusters. It can run on Nutanix Secondary storage cluster as well as the production cluster:
+   - In a Nutanix Mine environment, the HYCU appliance and target storage would reside on the same cluster, Nutanix Mine cluster.
+   - In a non-Mine production environment the HYCU appliance and Nutanix target storage would not reside on the same cluster.
 
 HYCU makes it incredibly easy to configure a Nutanix cluster (whether Mine or otherwise) as a target. After specifying Prism Element credentials, HYCU automatically configures a Volume Group with multiple vDisks and enables external iSCSI access.  The Volume Group is then formatted with XFS and allows data to be striped across the multiple underlying vDisks, thereby maximizing write performance, which in-turn helps minimize backup job times.  HYCU then leverages this Volume Group as a backup target.
 
@@ -159,7 +166,7 @@ HYCU makes it incredibly easy to configure a Nutanix cluster (whether Mine or ot
 
 #. Click **+ New**, fill out the following fields, and click **Save**:
 
-   - **Name** - Nutanix-Target
+   - **Name** - Nutanix_VG
    - **Concurrent Backups** - 4
    - **Description** - *Nutanix Cluster Name* HYCU-Target VG
    - **Type** - Nutanix
@@ -179,6 +186,95 @@ Multiple backup targets can be added to support backup jobs.
 
 .. figure:: images/10.png
 
+
+Configuring Nutanix Objects as a Target
++++++++++++++++++++++++++++++++++++++++
+
+HYCU supports the ability to backup workloads to S3-compatible object store making it a perfect use case for Nutanix Objects. HYCU is able to utilize Nutanix Objects natively, supporting not only archving but also primary backup/copy operations to Objects cluster without use of proxies. In addition, HYCU seamlessly integrates With Nutanix Objects WORM (objects lock) functionality, bringing proper ransomware protection to our clients.
+
+Nutanix Objects can be positioned in three ways
+   - HYCU with Mine cluster used as a primary storage, providing secondary copy and archiving capabilities on Nutanix Objects cluster
+   - In combination with existing customer primary storage, providing secondary copy and archiving capabilities on Nutanix Objects cluster
+   - HYCU appliance and target storage residing on the same Nutanix objects cluster - ransomware protection in a box.
+
+Nutanix Objects and HYCU security story is that much more powerful knowing that
+   - HYCU is a locked down Linux based appliance, running on CentOS version 8, updated with the latest security patches with each release
+   - HYCU is able to keep additional Nutanix snapshots as another layer of protection with Fast Restore option
+   - HYCU's Software WORM capabilities disallow accidental or malicious deletion of Backups
+   - End to end encryption support...
+
+Configuring Objects within HYCU is simple and straightforward and performance of writing to Objects is on par with using a traditional iSCSI backup target.
+
+.. note:: To save time, we have already enabled Objects within Prism Central and pre-staged an object store named "ntnx-objects." We will create our Bucket within that object store
+
+Create Access Keys
+..................
+
+#. Navigate to Prism Central > Services > Objects
+
+#. Click on "Access Keys" in the top left menu
+
+#. Click on "+ Add People," then select "Add people not in a directory service," then specify the name "*Initials*-hycu@ntnxlab.local." Click Next
+
+   .. note:: You can configure a directory service for user authentication here rather than local users
+
+   .. figure:: images/32.png
+
+#. Click Download Keys to download the user authentication key to your local machine. Then click Close.  We will use these keys later when we configure a bucket within HYCU
+
+   .. figure:: images/33.png
+
+Configuring a Bucket
+....................
+
+#. Click on "ntnx-objects," then select "Create Bucket"
+
+#. Name the bucket "*initials*-hycu-bucket" and leave the default options. Then click "Create"
+
+   .. figure:: images/34.png
+
+#. Once created, click on the bucket and select "User Access," then click the "Edit User Access"
+
+#. Type "*initials*-hycu@ntnxlab.local" and select both the "Read" and "Write" options, then click Save
+
+   .. figure:: images/35.png
+
+#. For additional ransomware protection select the just created bucket "*initials*-hycu-bucket" and navigate to Actions > Configure WORM to configure Nutanix objects WORM.
+
+#. Mark Enable WORM, set retention period to 7 days and Click "Enable WORM"
+
+   .. figure:: images/41.png
+
+Configure Nutanix Objects within HYCU
+.....................................
+
+#. In a new browser tab, navigate back to the HYCU interface and login (if required). Recall that the HYCU web interface listens on HTTPS using TCP port 8443
+
+#. Navigate to Targets in the left-hand menu
+
+   .. figure:: images/36.png
+
+#. Click the "+ Add" button towards the top right
+
+#. Name the target "Nutanix_Objects"
+
+#. Tick the option **Use for Archiving**
+
+#. Under Type, specify "AWS S3/Compatible"
+
+#. For the service endpoint, specify http://[objects client used IP]. This IP can be found within Prism Central when you click on the object store
+
+   .. figure:: images/37.png
+
+#. For Bucket Name, specify "*initials*hycu-bucket"
+
+#. Retrieve the Access Key ID and Secret Access Key from the file you downloaded earlier when configuring the user within Nutanix Objects. Click "Save"
+
+   .. figure:: images/38.png
+
+You can now modify existing HYCU policies or create new policies which "tier-off" backups to Objects
+
+
 Configuring Backup Policies
 +++++++++++++++++++++++++++
 
@@ -197,13 +293,13 @@ HYCU uses policies to define RPO, RTO, retention, and backup target(s), allowing
 
 #. Fill out the following fields and click **Save**:
 
-   - **Name** - Fast
-   - **Description** - 1 Hour RPO/RTO, Fast Restore Enabled (1 Week)
+   - **Name** - Platinum
+   - **Description** - 2 Hour RPO/RTO, Fast Restore Enabled (1 Week)
    - **Enabled Options** - Backup, Fast Restore
-   - **Backup Every** - 1 Hours
-   - **Recover Within** - 1 Hours
-   - **Retention** - 4 Weeks
-   - **Targets** - Automatically selected
+   - **Backup Every** - 2 Hours
+   - **Recover Within** - 2 Hours
+   - **Retention** - 2 Weeks
+   - **Targets** - Nutanix_VG
    - **Backup Threshold** - 25%
    - **Fast Restore Retention** - 1 Weeks
 
@@ -219,6 +315,23 @@ HYCU uses policies to define RPO, RTO, retention, and backup target(s), allowing
 
    HYCU is also unique in its ability for administrators to define desired RTO. By specifying a desired **Recover Within** period and selecting **Automatic** target selection, HYCU will compute the right target to send the VM. The performance of the target is constantly monitored to ensure it can recover the data within the configured window. If a HYCU instance has several targets configured, a subset can be selected and HYCU will still intelligently choose between the selected targets.
 
+#. To configure archiving to Nutanix Objects click on "Archiving" from the top right menu which will open the Archiving Prompt. Then click +New
+
+#. Name the Archival entry "Nutanix_Objects"
+
+#. Enable Monthly Archive and Choose the "Nutanix_Objects" target we previously configured
+
+  .. figure:: images/39.png
+
+#. Click Save and then edit the Platinum policy to enable archiving
+
+   - **Enabled Options** - Archiving
+   - **Data Archive** - Nutanix_Objects
+
+  .. figure:: images/40.png
+
+#. Click Save
+
 #. Select the **Exclude** policy and click **Set Default > Yes**.
 
    .. figure:: images/12.png
@@ -230,8 +343,7 @@ Backing Up A VM
 
 In this exercise you will back up a Windows Server VM with a mounted iSCSI Volume Group. In-guest iSCSI disks are common in enterprise apps such as SQL Server that require shared storage for high availability.
 
-.. note::
-   It is recommended to connect to the *Initials*\ **-HYCUBackupTest** via RDP so you can copy/paste the initiator name (IQN).
+Create a Windows VM and add a Nutanix Volume Group to a VM through Nutanix Prism, same can also be achieved through VM iSCSI Initiator.
 
 #. In **Prism > VM > Table**, click **+ Create VM**.
 
@@ -257,20 +369,6 @@ In this exercise you will back up a Windows Server VM with a mounted iSCSI Volum
 
 #. Complete the Sysprep process and provide a password for the local Administrator account (e.g. **nutanix/4u**).
 
-#. From within Prism, highlight the VM and select "Manage Guest Tools." Ensure that "Enable Nutanix Guest Tools," and "Mount Nutanix Guest Tools" are selected:
-
-   .. figure:: images/13c.png
-
-#. Log in as the local Administrator, navigate to the CDROM drive and install the Nutanix Guest Tools
-
-   .. figure:: images/13d.png
-
-#. Open **iSCSI Initiator** on the Windows VM. When prompted to start the Microsoft iSCSI service, click **Yes**.
-
-#. In **iSCSI Initiator Properties**, select the **Configuration** tab and note the **Initiator Name** value.
-
-   .. figure:: images/14.png
-
 #. From **Prism > Storage > Table > Volume Groups**, select **+ Volume Group**.
 
 #. Fill out the following fields:
@@ -283,26 +381,14 @@ In this exercise you will back up a Windows Server VM with a mounted iSCSI Volum
      - **Storage Container** - Default
      - **Size (GiB)** - 10
    - Select **Enable external client access**
-   - Select **+ Add New Client**
+   - Select **+ Attach to a VM**
 
-     - **Client IQN** - *Initiator Name* (Initiator Name was noted earlier on the Windows VM under iSCSI Initiator Properties)
-     - Select **Add**
+     - **Available VMs** - select the VM created before *Initials*\ -HYCUBackupTest
+     - Select **Attach**
 
 #. Click **Save**
 
 #. Return to your *Initials*\ **-HYCUBackupTest** console or RDP session.
-
-#. In **iSCSI Initiator Properties**, select the **Targets** tab.
-
-#. Provide your Nutanix cluster's **iSCSI Data Services IP** in the **Target** field and click **Quick Connect**.
-
-#. Select the discovered *Initials*\ -BackupTestVG target and click **Done > OK**.
-
-   .. note::
-
-      If you are unable to discover or connect to the Volume Group you may need to disable the Windows Firewall.
-
-   .. figure:: images/15.png
 
 #. Open PowerShell and run the following command to enable and format the disk:
 
@@ -317,7 +403,8 @@ In this exercise you will back up a Windows Server VM with a mounted iSCSI Volum
 
 #. From the **HYCU** sidebar, click :fa:`bars` **> Virtual Machines**.
 
-   Before assigning a policy to our VM, you will create a stored credential that HYCU can use to authenticate against the guest, allowing it to perform file and application aware backups, as well as discover your iSCSI disk.
+   Before assigning a policy to our VM, you will create a stored credential that HYCU can use to authenticate against the guest. HYCU uses these credentials to perform discovery and is required only if you need to perform granular file recovery back into the virtual machine, or application aware backups.
+   Volume groups attached to a VM via Prism will be automatically discovered through Nutanix APIs, and protected even without assigning credentials. If attaching the VM through in-guest iSCSI Initiator, discovery process will also discover the attached Volume groups.
 
 #. From the upper toolbar, click **(Key Icon) Credentials > + New**.
 
@@ -425,7 +512,7 @@ Restoring Backups
 
    .. note::
 
-      If the Volume Group fails to delete due to having attachments, **Update** the Volume Group and de-select the *Initials*\ **-HYCUBackupTest-Clone** VM IQN under **Clients**. Click **Save** and attempt to delete the Volume Group again.
+      If the Volume Group fails to delete due to having attachments, **Update** the Volume Group and detach it from the *Initials*\ **-HYCUBackupTest-Clone** VM. Click **Save** and attempt to delete the Volume Group again.
 
 #. Power on your original *Initials*\ **-HYCUBackupTest** VM.
 
@@ -461,109 +548,6 @@ In addition to restoring full VMs or disks, HYCU can also be used to directly re
    .. figure:: images/23.png
 
    HYCU provides flexibility for restoring Nutanix VMs, VGs, and file data while maintaining very simple "Prism-like" workflows. HYCU takes advantage of native Nutanix storage APIs to allow for fast and efficient backup and restore operations.
-
-
-.. _hycu-objects:
-Configuring Nutanix Objects as a Target
-+++++++++++++++++++++++++++++++++++++++
-
-HYCU supports the ability to backup workloads to S3-compatible object store. This is a prime use case for Nutanix Objects and one way in which we accommodate large backup workloads with Nutanix Mine - we size an initial Mine Secondary Storage cluster, and a separate Nutanix Objects cluster which can be configured as a target within HYCU.  Configuring Objects within HYCU is simple and straightforward and there's little to no performance penalty for using on-prem objects relative to using a traditional iSCSI backup target
-
-.. note:: To save time, we have already enabled Objects within Prism Central and pre-staged an object store named "ntnx-objects." We will create our Bucket within that object store
-
-Create Access Keys
-..................
-
-#. Navigate to Prism Central > Services > Objects
-
-#. Click on "Access Keys" in the top left menu
-
-#. Click on "+ Add People," then select "Add people not in a directory service," then specify the name "*Initials*-hycu@ntnxlab.local." Click Next
-
-   .. note:: You can configure a directory service for user authentication here rather than local users
-
-   .. figure:: images/32.png
-
-#. Click Download Keys to download the user authentication key to your local machine. Then click Close.  We will use these keys later when we configure a bucket within HYCU
-
-   .. figure:: images/33.png
-
-Configuring a Bucket
-....................
-
-#. Click on "ntnx-objects," then select "Create Bucket"
-
-#. Name the bucket "*initials*-hycu-bucket" and leave the default options. Then click "Create"
-
-   .. figure:: images/34.png
-
-#. Once created, click on the bucket and select "User Access," then click the "Edit User Access"
-
-#. Type "*initials*-hycu@ntnxlab.local" and select both the "Read" and "Write" options, then click Save
-
-   .. figure:: images/35.png
-
-
-Configure Nutanix Objects within HYCU
-.....................................
-
-#. In a new browser tab, navigate back to the HYCU interface and login (if required). Recall that the HYCU web interface listens on HTTPS using TCP port 8443
-
-#. Navigate to Targets in the left-hand menu
-
-   .. figure:: images/36.png
-
-#. Click the "+ Add" button towards the top right
-
-#. Name the target "NTNX_Objects"
-
-#. Tick the option **Use for Archiving**
-
-#. Under Type, specify "AWS S3/Compatible"
-
-#. For the service endpoint, specify http://[objects client used IP]. This IP can be found within Prism Central when you click on the object store
-
-   .. figure:: images/37.png
-
-#. For Bucket Name, specify "*initials*hycu-bucket"
-
-#. Retrieve the Access Key ID and Secret Access Key from the file you downloaded earlier when configuring the user within Nutanix Objects. Click "Save"
-
-   .. figure:: images/38.png
-
-You can now modify existing HYCU policies or create new policies which "tier-off" backups to Objects
-
-#. Navigate to Policies using the menu to the left
-
-#. Click on "Archving" from the top right menu which will open the Archiving Prompt. Then click + New
-
-#. Name the Archvial entry "NTNX_Objects"
-
-#. Choose the "NTNX_Objects" target we previously configured
-
-   .. figure:: images/39.png
-
-#. Click Save then click Close
-
-#. Click "+ New" to create a new Backup Policy
-
-#. Specify the following details:
-
-   - Name: Platinum
-   - Description: Backup every 2h, recover within 2h, archive weekly
-   - Enabled Options: Backup, Archiving
-   - Backup
-      - Backup Every: 2 Hours
-      - Recover Within: 2 Hours
-      - Retention: 4 Weeks
-      - Targets: Nutanix_Target
-      - Backup Threshold: 25%
-   - Archiving
-      - Data Archive: NTNX_Objects
-
-   .. figure:: images/40.png
-
-#. Click Save
 
 
 .. _hycu-files:
