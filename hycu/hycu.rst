@@ -93,7 +93,7 @@ HYCUアプライアンスの構成
 Backup Source（保護対象）の追加
 ++++++++++++++++++++++
 
-HYCUは、AHVまたはESXiホストのNutanixクラスターとの緊密な統合を提供します。 HYCUは、従来のハイパーバイザーの「スタン」スナップショットに依存するのではなく、Nutanix分散ストレージファブリックと直接APIを介して変更されたブロックを特定し、効率的なNutanixのスナップショットを活用します。スナップショットについてはこちら：`redirect-on-write snapshots <https://nutanixbible.com/#anchor-book-of-acropolis-snapshots-and-clones>`_
+HYCUは、AHVまたはESXiホストのNutanixクラスターとの緊密な統合を提供します。 HYCUは、従来のハイパーバイザーの「スタン」スナップショットに依存するのではなく、Nutanix分散ストレージファブリックと直接APIを介して変更されたブロックを特定し、効率的なNutanixのスナップショットを活用します。スナップショットについてはこちら：`Redirect-on-write snapshots <https://nutanixbible.com/#anchor-book-of-acropolis-snapshots-and-clones>`_
 
 HYCU仮想アプライアンスが展開されているクラスターがNutanix Mineの場合、Nutanix MineクラスターをHYCU内のソース（保護対象）とターゲット（保存場所）の両方として追加する必要があります。 HYCUをMineに展開する際、Nutanixクラスターをソースとして追加した後、ワンクリックでHYCUダッシュボードをPrismに登録できます。
 
@@ -197,7 +197,7 @@ Nutanix Objectsは3つのユースケースがあります。
    - 既存のお客様のストレージと組み合わせて、Nutanix Objectsを2次コピーとアーカイブ用途で使用します。
    - HYCUアプライアンスをNutanix Objects上に展開し、ランサムウェア対策として使用します。
 
-Nutanix ObjectsとHYCUの組み合わせによるセキュリティ対応は、
+Nutanix ObjectsとHYCUの組み合わせによるセキュリティ対応は
    - HYCUは、ロックダウンされたCentOSバージョン8ベースのアプライアンスであり、リリースごとに最新のセキュリティパッチで更新しています。
    - HYCUは、Fast Restoreオプション機能により、Nutanixスナップショットを追加の保護レイヤーとして保持できます。
    - HYCUのソフトウェアWORM機能は、バックアップデータを人的ミスもしくは悪意のある削除から保護します。
@@ -512,7 +512,7 @@ Windows VMを作成し、Nutanix Prismを介してVMにNutanix Volume Groupを�
 
    .. note::
 
-      アタッチメントがあるためにVolume Groupの削除に失敗した場合は、Volume Groupを **Update**し、Client下の *Initials*\ **-HYCUBackupTest-Clone** VM IQNの選択を解除します。 **Save**クリックして、再度Volume Groupを削除します。
+      アタッチされていることでVolume Groupの削除が失敗する場合、Volume Groupを **Update**し、Client下の *Initials*\ **-HYCUBackupTest-Clone** VM IQNの選択を解除します。 **Save**クリックして、再度Volume Groupを削除します。
 
 #. 元の *Initials*\ **-HYCUBackupTest** VMをPower onします。
 
@@ -568,7 +568,7 @@ SMB共有をターゲットとして追加
 
 この演習では、1つのファイル共有ソースをファイル共有ターゲットにバックアップします。 最初に、バックアップデータのターゲットとして使用するファイルクラスター上の共有を定義します。
 
-ファイルのバックアップには、NFSエクスポート、SMB共有、またはS3（クラウド）ターゲットが必要です。つまり、Nutanix Bucketsも使用できます。 バックアップ対象のファイルをブロックストレージに直接書き込むことができないため、iSCSIターゲットは現在サポートされていません。
+Filesのバックアップターゲットには、NFSエクスポート、SMB共有、またはS3（クラウド）ターゲットが必要です。つまり、Nutanix Bucketsも使用できます。 バックアップ対象のファイルをブロックストレージに直接書き込むことができないため、iSCSIターゲットは現在サポートされていません。
 
 #. **Prism > File Server**から、 **+ Share/Export**をクリックします。
 
@@ -615,7 +615,7 @@ HYCUがNutanix Files REST APIsおよびCFTにアクセスするためには資�
 Nutanix Filesをソースとして追加
 ...........................
 
-Filesの保護は、ハイパーバイザーをHYCUに追加することと似ていますが、Filesをソースとして追加すると、Filesを実行しているNutanixクラスターにHYCU Instanceが展開される点が異なります。 この追加インスタンスの目的は、HYCU Backup Controllerからファイルコピー操作をオフロードすることです。
+Filesの保護は、ハイパーバイザーをHYCUに追加することと似ていますが、Filesをソースとして追加すると、Filesを実行しているNutanixクラスター上にHYCU Instanceが展開される点が異なります。 この追加インスタンスの目的は、HYCU Backup Controllerからファイルコピー操作をオフロードすることです。
 
 DHCPが有効になっているAHVクラスターの場合、Filesソースを追加すると、追加のHYCU Instanceを自動的に展開できます。 ESXiまたはDHCPが無効の環境では、HYCU Instanceを手動で展開する必要があります。（HYCU Backup Controllerの展開と同様）。手動による展開の詳細については`HYCU User Guide <https://support.hycu.com/hc/en-us/sections/115001018365-Product-documentation>`_を参照してください。
 
