@@ -4,294 +4,294 @@
 HYCU
 ----
 
-*The estimated time to complete this lab is 60 minutes.*
+*この演習の推定所要時間は60分です。*
 
-Overview
+概要
 ++++++++
 
-HYCU is the only solution built from the ground up to deliver a full suite of backup capabilities for Nutanix AHV and ESXi clusters. HYCU can be used to backup Nutanix VMs, Volumes, and Nutanix Files deployments.
+HYCUは、Nutanix AHVおよびESXiクラスターに完全なバックアップ機能を提供するためにゼロから構築された唯一のソリューションであり、AHVの導入を検討する顧客の懸念を排除します。 HYCUは、Nutanix VM、Volumes、Nutanix Files環境のバックアップに利用できます。
 
-As pure software, HYCU can help grow Nutanix deals as additional nodes are positioned to act as a backup target for workloads.
+純粋なソフトウェアであるHYCUは、追加のノードがバックアップターゲット（保存場所）として機能するため、Nutanixの案件拡大に役立ちます。
 
-HYCU also fully supports non-Nutanix ESXi and Physical Windows Server environments, allowing customers migrating to Nutanix from legacy platforms a single backup solution. HYCU is able to backup any application in a consistent manner using pre/post exec framework, and has special integration with the following Applications and File Services on Nutanix:
+HYCUは、Nutanix以外のESXiおよび物理Windows Server環境も完全にサポートしているため、顧客はレガシープラットフォームからNutanixの統合バックアップソリューションに移行できます。また、 HYCUはNutanix上の次のアプリケーションとファイルサービスをバックアップできます：
 
-- Microsoft SQL Server (including failover and Availability Groups)
-- Microsoft Exchange Server (including Database Availability Group (DAG))
+- Microsoft SQL Server (フェールオーバークラスタおよびAvailability Groupを含む)
+- Microsoft Exchange Server (Database Availability Group (DAG)を含む)
 - Microsoft Active Directory
 - Oracle Database
 - Microsoft Failover Cluster
 - SAP HANA
 - Nutanix Files
 - Nutanix Volume Groups
-- A-sync and Near-sync snapshots
+- A-syncおよびNear-sync スナップショット
 
-HYCU can be bundled with Nutanix's Secondary Storage Offering, Nutanix Mine.
+HYCUは、Nutanixのセカンダリストレージ製品であるNutanix Mineとバンドルできます。
 
 .. figure:: images/mine_hycu_logo.png
 
-**In this lab you will deploy and configure a HYCU appliance and explore different workflows for backup and recovery of data within a Nutanix environment.**
+**この演習では、HYCU仮想アプライアンスを展開して構成し、Nutanix環境のさまざまなワークロードのデータのバックアップと復元について学びます。**
 
-Configuring HYCU Appliance
+HYCUアプライアンスの構成
 ++++++++++++++++++++++++++
 
-#. In **Prism > VM > Table**, click **+ Create VM**.
+#. **Prism > VM > Table**から **+ Create VM**をクリックします。
 
-#. Fill out the following fields and click **Save**:
+#. フィールドに値を入力し、 **Save**をクリックします：
 
    - **Name** - *Initials*\ **-HYCU**
    - **vCPU(s)** - 4
    - **Number of Cores per vCPU** - 1
    - **Memory** - 4 GiB
-   - Select **+ Add New Disk**
+   - **+ Add New Disk**を選択
 
      - **Operation** - Clone from Image Service
      - **Image** - hycu-\*.qcow2
-     - Select **Add**
-   - Select **+ Add New Disk**
+     - **Add**を選択
+   - **+ Add New Disk**を選択
 
      - **Operation** - Allocate on Storage Container
      - **Storage Container** - Default
      - **Size (GiB)** - 32
-     - Select **Add**
-   - Remove **CD-ROM** Disk
-   - Select **Add New NIC**
+     - **Add**を選択
+   - **CD-ROM** Diskを削除
+   - **Add New NIC**を選択
 
      - **VLAN Name** - Secondary
-     - Select **Add**
+     - **Add**を選択
 
-#. Select the *Initials*\ **-HYCU** VM and click **Power on**.
+#. *Initials*\ **-HYCU** VMを選択し、 **Power on**をクリックします。
 
-   The CPU and memory resources of the backup appliance can be scaled up depending on the number of VM backups managed by HYCU. Complete sizing details are provided in the `HYCU User Guide <https://support.hycu.com/hc/en-us/sections/115001018365-Product-documentation>`_.
+   保護対象VMの数に応じてバックアップアプライアンスのCPUおよびメモリリソースを増やします。サイジングの詳細については`HYCU User Guide <https://support.hycu.com/hc/en-us/sections/115001018365-Product-documentation>`_を参照してください。
 
-   The secondary disk added to the appliance is used as a data disk for the local HYCU database as well as maintenance operations. It is not used for storing VM backup data.
+   アプライアンスに追加されたセカンダリディスクは、ローカルHYCUデータベースおよびメンテナンス用のデータディスクとして使用されます。 VMバックアップのデータは保存しません。
 
-#. Click **Launch Console**.
+#. **Launch Console**をクリックします。
 
-#. Select **1 HYCU Backup Controller**
+#. **1 HYCU Backup Controller**を選択します。
 
 .. figure:: images/0.png
 
-#. Fill out the following fields, highlight **OK** and press **Return**:
+#. 以下のフィールドを値を入力し、 **OK**をハイライトして **Enter**キーをクリックします：
 
    - **Hostname** - *Initials*\ **-HYCU**
    - **IPv4 address** - *Specify the IP Assigned by IPAM DHCP*
    - **Subnet mask** - 255.255.255.128
-   - **Default gateway** - *Secondary VLAN Gateway* (e.g. 10.XX.YY.129)
-   - **DNS server** - *Your DC VM IP*
+   - **Default gateway** - *Secondary VLAN Gateway* (例： 10.XX.YY.129)
+   - **DNS server** - *DC VM IP*
    - **Search domain** - ntnxlab.local
 
-   .. note:: Switch fields by pressing the Tab key.
+   .. note:: フィールドの切り替えにはTabキーをクリックします。
 
    .. figure:: images/1.png
 
-   Wait approximately 1 minute for the internal database to initialize and backup controller services to start.
+   内部データベースが初期化され、バックアップ・コントローラーのサービスが開始されるまで、約1分待ちます。
 
-#. Note the default credentials and press **Return**. Close the **HYCU** VM console.
+#. デフォルトの資格情報をメモします。 **Enter**キーをクリックして **HYCU** VMコンソールを閉じます。
 
    .. figure:: images/2.png
 
-Adding A Backup Source
+Backup Source（保護対象）の追加
 ++++++++++++++++++++++
 
-HYCU provides tight integration with Nutanix clusters running either AHV or ESXi. Rather than relying on traditional hypervisor "stun" snapshots, HYCU speaks directly to the Nutanix Distributed Storage Fabric to determine changed blocks via API and leverage efficient `redirect-on-write snapshots <https://nutanixbible.com/#anchor-book-of-acropolis-snapshots-and-clones>`_.
+HYCUは、AHVまたはESXiホストのNutanixクラスターとの緊密な統合を提供します。 HYCUは、従来のハイパーバイザーの「スタン」スナップショットに依存するのではなく、Nutanix分散ストレージファブリックと直接APIを介して変更されたブロックを特定し、効率的なNutanixのスナップショットを活用します。スナップショットについてはこちら：`Redirect-on-write snapshots <https://nutanixbible.com/#anchor-book-of-acropolis-snapshots-and-clones>`_
 
-If the cluster on which the HYCU virtual appliance is being deployed is a Nutanix Mine appliance, then the Nutanix Mine cluster needs to be added as both a source and target within HYCU. When deploying HYCU to a Mine appliance, the HYCU Dashboard can be deployed to the Prism Element of the cluster with one-click after adding the Nutanix Cluster as a Source.
+HYCU仮想アプライアンスが展開されているクラスターがNutanix Mineの場合、Nutanix MineクラスターをHYCU内のソース（保護対象）とターゲット（保存場所）の両方として追加する必要があります。 HYCUをMineに展開する際、Nutanixクラスターをソースとして追加した後、ワンクリックでHYCUダッシュボードをPrismに登録できます。
 
-#. Open \https://<*HYCU-VM-IP*>:8443/ in a browser. Log in to the **HYCU** HTML5 web interface using the default credentials:
+#. ブラウザから \https://<*HYCU-VM-IP*>:8443/ を開きます。 既定の資格情報を使ってログインします：
 
    - **Username** - admin
    - **Password** - admin
 
-#. From the toolbar, click :fa:`cog` **> Sources**.
+#. ツールバーから、:fa:`cog` **> Sources**をクリックします。
 
    .. figure:: images/3.png
 
-#. Click **+ New** and fill out the following fields:
+#. **+ New**をクリックし、 以下のフィールドに値を入力します：
 
-   - **URL** - *Your Prism Element URL* (e.g. https://10.XX.YY.37:9440)
+   - **URL** - *Prism ElementのURL* (例：https://10.XX.YY.37:9440)
    - **User** - admin
    - **Password** - *Prism Element Password*
 
-#. Click **Next**.
+#. **Next**をクリックします。
 
-#. HYCU will validate the Nutanix cluster. Click **Save**
+#. HYCUがNutanixクラスターを検証します。 **Save**をクリックします。
 
    .. figure:: images/4.png
 
-#. After the job has been initiated, click **Close**.
+#. ジョブの開始後、 **Close**をクリックします。
 
-   All jobs are launched asynchronously and can be tracked on the **Jobs** page.
+   すべてのジョブは非同期で実行され、 **Jobs**ページで確認できます。
 
    .. figure:: images/5.png
 
-   .. note:: **A note about Nutanix Mine with HYCU** At this point, if this were a Nutanix Mine cluster, we could deploy the Mine prism dashboard to the cluster - to do so, we would highlight the Mine cluster under sources and click "Register with Prism" to deploy the HYCU dashboard to Prism. Because these are shared clusters here at Global Tech Summit, please **do not** deploy the Mine Prism dashboard to the cluster.
+   .. note:: **Nutanix Mine with HYCUにおける注意点：** Nutanix Mineクラスターの場合、ダッシュボードをMine Prismに展開できます。ソースの下でMineクラスターを強調表示し、[Register with Prism]をクリックしてHYCUダッシュボードをPrismに展開します。 この環境はGlobal Tech Summitの共有クラスターであるため、Mine Prismにダッシュボードを展開しないでください。
 
      .. figure:: images/6.png
 
-     Deploying the HYCU dashboard to Prism Element will automatically restart the Prism Service on the cluster.
+     HYCUダッシュボードをPrism Elementに展開すると、クラスターのPrismサービスが自動的に再起動します。
 
      .. figure:: images/7.png
 
-#. From the **HYCU** sidebar, click :fa:`bars` **> Virtual Machines** and validate that your cluster's VMs are listed in the table.
+#. **HYCU**サイドバーから、:fa:`bars` **> Virtual Machines**をクリックし、クラスターのVMがリスト表示されていることを確認します。
 
-Adding A Backup Target
+Backup Target（保存場所）の追加
 ++++++++++++++++++++++
 
-The target is used for storing backups coordinated by HYCU. HYCU supports following type of targets
-   - Nutanix (Nutanix specific iSCSI)
+ターゲットはバックアップデータを保存するために使用されます。HYCUは以下のターゲットをサポートします。
+   - Nutanix (Nutanix独自のiSCSI)
    - iSCSI
-   - NFS (including Nutanix Files)
-   - SMB (including Nutanix Files)
-   - AWS, S3 (including Nutanix Buckets)
+   - NFS (Nutanix Filesを含む)
+   - SMB (Nutanix Files含む)
+   - AWS, S3 (Nutanix Bucketsを含む)
    - Azure
    - Google Cloud Platform (GCP)
 
-In this exercise you will use Nutanix as a target for VM backup data. Nutanix can be utilized as target storage in two different ways, through Nutanix Volumes and Nutanix Objects.
+この演習では、NutanixをVMバックアップデータのターゲットとして使用します。 Nutanix VolumesとNutanix Objectsを通じて、2つの異なるターゲットストレージを利用できます。
 
 
-Configuring Nutanix Volumes as a Target
+Nutanix Volumesをターゲットとして設定
 +++++++++++++++++++++++++++++++++++++++
 
-HYCU runs natively on Nutanix clusters. It can run on Nutanix Secondary storage cluster as well as the production cluster:
-   - In a Nutanix Mine environment, the HYCU appliance and target storage would reside on the same cluster, Nutanix Mine cluster.
-   - In a non-Mine production environment the HYCU appliance and Nutanix target storage would not reside on the same cluster.
+HYCUはNutanixクラスター上でネイティブに実行されます。 本番クラスターまたはセカンダリストレージクラスターのどちらにも展開できます：
+   - Nutanix Mine環境では、HYCUアプライアンスとターゲットストレージは同じクラスターに存在します。
+   - Nutanix Mine以外の環境では、HYCUアプライアンスはソースVMと同じクラスター上に展開し、ターゲットストレージはソースVMと異なるクラスターに作成します。
 
-HYCU makes it incredibly easy to configure a Nutanix cluster (whether Mine or otherwise) as a target. After specifying Prism Element credentials, HYCU automatically configures a Volume Group with multiple vDisks and enables external iSCSI access.  The Volume Group is then formatted with XFS and allows data to be striped across the multiple underlying vDisks, thereby maximizing write performance, which in-turn helps minimize backup job times.  HYCU then leverages this Volume Group as a backup target.
+HYCUを使用すると、Nutanixクラスター（Mineかどうかに関係なく）をターゲットとして非常に簡単に構成できます。 Prism Elementの資格情報を指定した後、HYCUは複数のvDiskでボリュームグループを自動的に構成し、外部iSCSIアクセスを有効にします。 次に、ボリュームグループはXFSでフォーマットされ、基盤となるvDisk全体にデータをストライプできるため、書き込みパフォーマンスが最大化され、バックアップ時間を最小化できます。 そして、HYCUはこのVolume Groupをバックアップターゲットとして活用します。
 
-.. note:: Prior to configuring a Nutanix target in HYCU, ensure the cluster has a Data Services IP configured
+.. note:: Nutanixをターゲットとして登録する前に、iSCSI Data Services IPが構成されていることを確認してください。
 
    .. figure:: images/8.png
 
-#. From the **HYCU** sidebar, click :fa:`bars` **> Targets**.
+#. **HYCU**サイドバーから、:fa:`bars` **> Targets**をクリックします。
 
-#. Click **+ New**, fill out the following fields, and click **Save**:
+#. **+ New**をクリックします。以下のフィールドに値を入力し、最後に **Save**をクリックします。
 
    - **Name** - Nutanix_VG
    - **Concurrent Backups** - 4
    - **Description** - *Nutanix Cluster Name* HYCU-Target VG
    - **Type** - Nutanix
-   - **URL** - *Your Prism Element URL* (e.g. https://10.XX.YY.37:9440)
+   - **URL** - *Prism ElementのURL* (例：https://10.XX.YY.37:9440)
    - **Username** - admin
    - **Password** - *Prism Element Password*
 
    .. figure:: images/9.png
 
-Multiple backup targets can be added to support backup jobs.
+複数のターゲットを登録することも可能です。
 
-.. note:: Nutanix storage container settings can be configured at this step. Follow Nutanix recommended best practice for backup workloads - as a general rule, hardware compression can be enabled, but deduplication should be left disabled. If the cluster has 4 or more nodes, consider enabling Erasure Coding.
+.. note:: この手順では、Nutanix storage containerを設定できます。バックアップワークロードについては、Nutanixが推奨するベストプラクティスに従います。原則として、ハードウェア圧縮は有効にできますが、重複排除は無効のままにしておく必要があります。クラスターに4つ以上のノードがある場合は、Erasure Codingを有効にすることを検討してください。
 
-#. The Target Deployment takes about 3 minutes to complete. You can monitor the progress in the "Jobs" menu within HYCU
+#. ターゲットの展開は約3分で完了します。HYCUの"Jobs"メニューから進行状況を確認できます。
 
-#. HYCU automatically deploys a Volume Group. Once the target configuration completes, you can see the HYCU container and Volume Group deployed from within the cluster's Prism Element interface:
+#. HYCUはVolume Groupを自動的に展開します。 ターゲットの設定が完了すると、HYCU ContainerとVolume Groupが作成されたことが、Prism Elementから確認できます：
 
 .. figure:: images/10.png
 
 
-Configuring Nutanix Objects as a Target
+Nutanix Objectsをターゲットとして設定
 +++++++++++++++++++++++++++++++++++++++
 
-HYCU supports the ability to backup workloads to S3-compatible object store making it a perfect use case for Nutanix Objects. HYCU is able to utilize Nutanix Objects natively, supporting not only archving but also primary backup/copy operations to Objects cluster without use of proxies. In addition, HYCU seamlessly integrates With Nutanix Objects WORM (objects lock) functionality, bringing proper ransomware protection to our clients.
+HYCUは、S3互換オブジェクトにバックアップする機能があり、Nutanix Objectsは最適なユースケースになります。 HYCUはNutanix Objectsにネイティブで対応しており、プロキシ等を使用することなくバックアップやコピー、そしてアーカイブすることができます。さらに、Nutanix Objects WORM機能（オブジェクトロック）とシームレスに統合し、ランサムウェアからデータを適切に保護します。
 
-Nutanix Objects can be positioned in three ways
-   - HYCU with Mine cluster used as a primary storage, providing secondary copy and archiving capabilities on Nutanix Objects cluster
-   - In combination with existing customer primary storage, providing secondary copy and archiving capabilities on Nutanix Objects cluster
-   - HYCU appliance and target storage residing on the same Nutanix objects cluster - ransomware protection in a box.
+Nutanix Objectsは3つのユースケースがあります。
+   - Mine with HYCUをセカンダリストレージとして使用し、Nutanix Objectsを2次コピーとアーカイブ用途で使用します。
+   - 既存のお客様のストレージと組み合わせて、Nutanix Objectsを2次コピーとアーカイブ用途で使用します。
+   - HYCUアプライアンスをNutanix Objects上に展開し、ランサムウェア対策として使用します。
 
-Nutanix Objects and HYCU security story is that much more powerful knowing that
-   - HYCU is a locked down Linux based appliance, running on CentOS version 8, updated with the latest security patches with each release
-   - HYCU is able to keep additional Nutanix snapshots as another layer of protection with Fast Restore option
-   - HYCU's Software WORM capabilities disallow accidental or malicious deletion of Backups
-   - End to end encryption support...
+Nutanix ObjectsとHYCUの組み合わせによるセキュリティ対応は
+   - HYCUは、ロックダウンされたCentOSバージョン8ベースのアプライアンスであり、リリースごとに最新のセキュリティパッチで更新しています。
+   - HYCUは、Fast Restoreオプション機能により、Nutanixスナップショットを追加の保護レイヤーとして保持できます。
+   - HYCUのソフトウェアWORM機能は、バックアップデータを人的ミスもしくは悪意のある削除から保護します。
+   - エンドツーエンドの暗号化をサポートします。
 
-Configuring Objects within HYCU is simple and straightforward and performance of writing to Objects is on par with using a traditional iSCSI backup target.
+HYCU内でのObjectsの設定はとてもシンプルで、Objectsへの書き込みパフォーマンスは、従来のiSCSIバックアップターゲットを使用した場合と同等です。
 
-.. note:: To save time, we have already enabled Objects within Prism Central and pre-staged an object store named "ntnx-objects." We will create our Bucket within that object store
+.. note:: 時間を節約するために、Prism Central内でObjectsを有効にし、"ntnx-objects"という名前のObject storeを事前に展開しています。このObject store内にBucketを作成します。
 
-Create Access Keys
+Access Keysの作成
 ..................
 
-#. Navigate to Prism Central > Services > Objects
+#. Prism Central > Services > Objectsに進みます。
 
-#. Click on "Access Keys" in the top left menu
+#. 左上のメニューから"Access Keys"をクリックします。
 
-#. Click on "+ Add People," then select "Add people not in a directory service," then specify the name "*Initials*-hycu@ntnxlab.local." Click Next
+#. "+ Add People"をクリックし、 "Add people not in a directory service"を選択します。次に" *Initials*-hycu@ntnxlab.local." をEmail Addresses欄に入力し、Nextをクリックします。
 
-   .. note:: You can configure a directory service for user authentication here rather than local users
+   .. note:: ローカルユーザーではなく、ここではユーザー認証用のディレクトリサービスを設定できます。
 
    .. figure:: images/32.png
 
-#. Click Download Keys to download the user authentication key to your local machine. Then click Close.  We will use these keys later when we configure a bucket within HYCU
+#. “Download Keys“をクリックし、 ユーザー認証キーをローカルマシンにダウンロードします。 次にCloseをクリックします。 後ほどHYCU内でバケットを構成するときにこのキーを使用します。
 
    .. figure:: images/33.png
 
-Configuring a Bucket
+Bucketの構成
 ....................
 
-#. Click on "ntnx-objects," then select "Create Bucket"
+#. "ntnx-objects"をクリックし、"Create Bucket"を選択します。
 
-#. Name the bucket "*initials*-hycu-bucket" and leave the default options. Then click "Create"
+#. バケットの名前を "*initials*-hycu-bucket"とし、デフォルトオプションのまま"Create"をクリックします。
 
    .. figure:: images/34.png
 
-#. Once created, click on the bucket and select "User Access," then click the "Edit User Access"
+#. 作成後にバケットをクリックし、"User Access"を選択します。次に"Edit User Access"をクリックします。
 
-#. Type "*initials*-hycu@ntnxlab.local" and select both the "Read" and "Write" options, then click Save
+#. "*initials*-hycu@ntnxlab.local" と入力し、"Read"と"Write"オプションの両方を選び、Saveをクリックします。
 
    .. figure:: images/35.png
 
-#. For additional ransomware protection select the just created bucket "*initials*-hycu-bucket" and navigate to Actions > Configure WORM to configure Nutanix objects WORM.
+#. ランサムウェア対策には、"*initials*-hycu-bucket"バケットを作成し、Actions > Configure WORMに進みます。
 
-#. Mark Enable WORM, set retention period to 7 days and Click "Enable WORM"
+#. WORM機能を有効にするには、Retention periodを7 daysと入力し、"Enable WORM"をクリックします。
 
    .. figure:: images/41.png
 
-Configure Nutanix Objects within HYCU
+HYCU内でNutanix Objectsを設定
 .....................................
 
-#. In a new browser tab, navigate back to the HYCU interface and login (if required). Recall that the HYCU web interface listens on HTTPS using TCP port 8443
+#. 新しいブラウザタブでHYCUインターフェースに戻り、ログインします（必要な場合）。 HYCU WebインターフェースがTCPポート8443を使用してHTTPSでリッスンすることを思い出してください。
 
-#. Navigate to Targets in the left-hand menu
+#. 左側のメニューからTargetsに進みます。
 
    .. figure:: images/36.png
 
-#. Click the "+ Add" button towards the top right
+#. 右上の"+ Add"ボタンをクリックします。
 
-#. Name the target "Nutanix_Objects"
+#. ターゲットの名前をNTNX_Objectsにします。
 
-#. Tick the option **Use for Archiving**
+#. **Use for Archiving**オプションを有効にします。
 
-#. Under Type, specify "AWS S3/Compatible"
+#. Typeで"AWS S3/Compatible"を選択します。
 
-#. For the service endpoint, specify http://[objects client used IP]. This IP can be found within Prism Central when you click on the object store
+#. Service endpointとして、http://[objects client used IP]を入力します。このIPは Prism  CentralでObject storeをクリックすることで確認できます。
 
    .. figure:: images/37.png
 
-#. For Bucket Name, specify "*initials*hycu-bucket"
+#. バケット名として"*initials*hycu-bucket"を入力します。
 
-#. Retrieve the Access Key ID and Secret Access Key from the file you downloaded earlier when configuring the user within Nutanix Objects. Click "Save"
+#. 前にダウンロードしたファイルからAccess KeyとSecret Accessを取得し、Nutanix Objectsのユーザーとして使用します。"Save"をクリックします。
 
    .. figure:: images/38.png
 
-You can now modify existing HYCU policies or create new policies which "tier-off" backups to Objects
+既存のHYCUポリシーを変更するか、Objectsへアーカイブする新しいポリシーを作成できるようになりました。
 
 
-Configuring Backup Policies
+Backupポリシーの構成
 +++++++++++++++++++++++++++
 
-HYCU uses policies to define RPO, RTO, retention, and backup target(s), allowing for the easy application of these SLAs to groups of VMs.
+HYCUはポリシーを使用してRPO、RTO、保持期間、およびバックアップのターゲットを定義します。そして、これらのSLAをVMのグループに簡単に適用できます。
 
-#. From the **HYCU** sidebar, click :fa:`bars` **> Policies**.
+#. **HYCU**サイドバーから、:fa:`bars` **> Policies**をクリックします。
 
-   By default HYCU is configured with 4 different Policies:
+   既定で4つのポリシーが構成されています:
 
-   - **Gold** - 4 Hour RPO, 4 Hour RTO
-   - **Silver** - 12 Hour RPO, 12 Hour RTO
-   - **Bronze** - 24 Hour RPO, 24 Hour RTO
-   - Exclude - Backup not required
+   - **Gold** - RPO4時間、RTO4時間
+   - **Silver** - RPO12時間、RTO12時間
+   - **Bronze** - RPO24時間、RTO24時間
+   - Exclude - バックアップから除外
 
-#. To create a custom policy, click **+ New**.
+#. カスタムポリシーを作成するには、 **+ New**をクリックします。
 
-#. Fill out the following fields and click **Save**:
+#. 以下のフィールドに値を入力し、 **Save**をクリックします:
 
    - **Name** - Platinum
    - **Description** - 2 Hour RPO/RTO, Fast Restore Enabled (1 Week)
@@ -305,187 +305,187 @@ HYCU uses policies to define RPO, RTO, retention, and backup target(s), allowing
 
    .. figure:: images/11.png
 
-   HYCU supports multiple advanced configurations for backup policies, including:
+   HYCUは、以下を含む複数の高度なバックアップポリシーをサポートしています：
 
-   - **Backup Windows** - Allows an administrator to define granular time of day and day of week schedules to enforce backup policy.
-   - **Copy** - Asyncronously copies data from the primary backup target to a configurable secondary backup target during periods of non-peak utilization.
-   - **Archiving** - Allows an administrator to target slower, cold storage for long term retention of **full** backups.
-   - **Fast Restore** - Retains and restores from local snapshots on the Nutanix cluster for rapid restore operations.
-   - **Backup from Replica** - For VMs that use native Nutanix replication from a primary cluster to a secondary cluster, this feature will backup VMs from the replicated snapshots on the secondary cluster. This functionality can significantly reduce data movement for scenarios such as Remote Office Branch Office. It also removes the need for deployment of agents/proxies within the remote site.
+   - **Backup Windows** - 管理者は、ジョブ実行の細かい時間帯と曜日のスケジュールを定義し、バックアップポリシーに適用できます。
+   - **Copy** - ピーク外の時間帯で、データをプライマリターゲットからセカンダリターゲットに非同期でコピーします。
+   - **Archiving** - 管理者は、フルバックアップを長期間保存するために、コールドストレージを使用することができます。
+   - **Fast Restore** - Nutanixクラスターのローカルスナップショットを保持し、復元時に利用することで、迅速な復元を実現します。
+   - **Backup from Replica** - プライマリクラスターからセカンダリクラスターへのネイティブNutanixレプリケーションを使用するVMの場合、この機能は、セカンダリクラスター上のレプリカスナップショットからVMをバックアップします。 この機能により、リモートオフィスやブランチオフィスなどのシナリオにおいて転送データ量を大幅に削減できます。 また、リモートサイトにエージェントやプロキシを展開する必要もなくなります。
 
-   HYCU is also unique in its ability for administrators to define desired RTO. By specifying a desired **Recover Within** period and selecting **Automatic** target selection, HYCU will compute the right target to send the VM. The performance of the target is constantly monitored to ensure it can recover the data within the configured window. If a HYCU instance has several targets configured, a subset can be selected and HYCU will still intelligently choose between the selected targets.
+   HYCUは、管理者がRTOを定義する機能も特徴的です。 **Recover Within**を指定してターゲットで **Automatic**を選択すると、HYCUはバックアップを転送する適切なターゲットを計算します。 ターゲットのパフォーマンスは常に監視され、構成されたウィンドウ内でデータを復元できることが保証されます。 HYCUインスタンスに複数のターゲットが設定されている場合、サブセットを選択でき、HYCUは選択されたターゲットから適切に選択します。
 
-#. To configure archiving to Nutanix Objects click on "Archiving" from the top right menu which will open the Archiving Prompt. Then click +New
+#. Nutanix Objectsへのアーカイブを構成するには、右上のメニューから"Archiving"をクリックして、アーカイブプロンプトを開きます。次に+Newをクリックします。
 
-#. Name the Archival entry "Nutanix_Objects"
+#. アーカイブの名前を"Nutanix_Objects"にします。
 
-#. Enable Monthly Archive and Choose the "Nutanix_Objects" target we previously configured
+#. Monthly Archiveを有効にし、先の手順で作成した"Nutanix_Objects"を選択します。
 
   .. figure:: images/39.png
 
-#. Click Save and then edit the Platinum policy to enable archiving
+#. Saveをクリックし、次にPlatinumポリシーを編集（Edit）し、アーカイブを有効にします。
 
    - **Enabled Options** - Archiving
    - **Data Archive** - Nutanix_Objects
 
   .. figure:: images/40.png
 
-#. Click Save
+#. Saveをクリックします。
 
-#. Select the **Exclude** policy and click **Set Default > Yes**.
+#. **Exclude**ポリシーを選択し、  **Set Default > Yes**をクリックします。
 
    .. figure:: images/12.png
 
-   This will set the default policy for VMs to not be backed up by HYCU. In a production environment you could choose the appropriate policy to minimally backup all VMs by default. Any new VMs created on the source cluster(s) will automatically be applied the default policy.
+   このデフォルトポリシーにより、VMがHYCUによって既定でバックアップされないようにします。本番環境では、適切なポリシーを選択し、既定ですべてのVMをバックアップできます。 ソースクラスター上で作成された新しいVMには、デフォルトのポリシーが自動的に適用されます。
 
-Backing Up A VM
+仮想マシンのバックアップ
 +++++++++++++++
 
-In this exercise you will back up a Windows Server VM with a mounted iSCSI Volume Group. In-guest iSCSI disks are common in enterprise apps such as SQL Server that require shared storage for high availability.
+この演習では、iSCSI Volume GroupがマウントされたWindows Server VMをバックアップします。 ゲスト内のiSCSIディスクは、高可用性のために共有ストレージを必要とするSQL Serverなどのエンタープライズアプリケーションでは一般的です。
 
-Create a Windows VM and add a Nutanix Volume Group to a VM through Nutanix Prism, same can also be achieved through VM iSCSI Initiator.
+Windows VMを作成し、Nutanix Prismを介してVMにNutanix Volume Groupを追加します。これは、VM iSCSIイニシエーターを使用して行うこともできます。
 
-#. In **Prism > VM > Table**, click **+ Create VM**.
+#. **Prism > VM > Table**に進み、 **+ Create VM**をクリックします。
 
-#. Fill out the following fields and click **Save**:
+#. 以下のフィールドに値を入力し、 **Save**をクリックします:
 
    - **Name** - *Initials*\ -HYCUBackupTest
    - **vCPU(s)** - 2
    - **Number of Cores per vCPU** - 1
    - **Memory** - 4 GiB
-   - Select **+ Add New Disk**
+   - **+ Add New Disk**を選択
 
      - **Operation** - Clone from Image Service
      - **Image** - Windows2012R2.qcow2
-     - Select **Add**
-   - Select **Add New NIC**
+     - **Add**を選択
+   - **Add New NIC**を選択
 
      - **VLAN Name** - Secondary
-     - Select **Add**
+     - **Add**を選択
 
-#. Select the *Initials*\ **-HYCUBackupTest** VM and click **Power on**.
+#. *Initials*\ **-HYCUBackupTest**を選択し、 **Power on**をクリックします。
 
-#. Once the VM has started, click **Launch Console**.
+#. VM起動後、 **Launch Console**をクリックします。
 
-#. Complete the Sysprep process and provide a password for the local Administrator account (e.g. **nutanix/4u**).
+#. Sysprepプロセスを完了し、ローカル管理者アカウントのパスワードを入力します。 (例：nutanix/4u)
 
-#. From **Prism > Storage > Table > Volume Groups**, select **+ Volume Group**.
+#. **Prism > Storage > Table > Volume Groups**から、 **+ Volume Group**を選択します。
 
-#. Fill out the following fields:
+#. 以下のフィールドに値を入力します:
 
    - **Name** - *Initials*\ -BackupTestVG
    - **iSCSI Target Name Prefix** - *Initials*\ -HYCU-Target
    - **Description** - VG attached to HYCUBackupTest VM
-   - Select **+ Add New Disk**
+   - **+ Add New Disk**を選択
 
      - **Storage Container** - Default
      - **Size (GiB)** - 10
-   - Select **Enable external client access**
-   - Select **+ Attach to a VM**
+   - **Enable external client access**を選択
+   - **+ Attach to a VM**を選択
 
-     - **Available VMs** - select the VM created before *Initials*\ -HYCUBackupTest
-     - Select **Attach**
+     - **Available VMs** - *Initials*\ -HYCUBackupTest の前に作成されたVMを選択
+     - **Attach**を選択
 
-#. Click **Save**
+#. **Save**をクリックします。
 
-#. Return to your *Initials*\ **-HYCUBackupTest** console or RDP session.
+#. *Initials*\ **-HYCUBackupTest**コンソールまたはRDPセッションに戻ります。
 
-#. Open PowerShell and run the following command to enable and format the disk:
+#. PowerShellを開いて次のコマンドを実行し、ディスクを有効にしてフォーマットします：
 
    .. code-block:: powershell
 
      Get-Disk -Number 1 | Initialize-Disk -ErrorAction SilentlyContinue
      New-Partition -DiskNumber 1 -UseMaximumSize -AssignDriveLetter -ErrorAction SilentlyContinue | Format-Volume -Confirm:$false
 
-#. Finally, create multiple files on the OS (C:) disk (e.g. text files on the Desktop), as well as the iSCSI (E:) disk.
+#. 最後に、iSCSI（E :)ディスクだけでなく、OS（C :)ディスク（デスクトップ上のテキストファイルなど）に複数のファイルを作成します。
 
    .. figure:: images/13.png
 
-#. From the **HYCU** sidebar, click :fa:`bars` **> Virtual Machines**.
+#. **HYCU**サイドバーから、 :fa:`bars` **> Virtual Machines**を選択します。
 
-   Before assigning a policy to our VM, you will create a stored credential that HYCU can use to authenticate against the guest. HYCU uses these credentials to perform discovery and is required only if you need to perform granular file recovery back into the virtual machine, or application aware backups.
-   Volume groups attached to a VM via Prism will be automatically discovered through Nutanix APIs, and protected even without assigning credentials. If attaching the VM through in-guest iSCSI Initiator, discovery process will also discover the attached Volume groups.
+   VMにポリシーを割り当てる前に、HYCUがゲストOSへの認証に使用する資格情報を作成し保存します。これは、ファイルとアプリケーションに対応したバックアップを実行し、iSCSIディスクを検出できるようにします。
+   Prismを介してVMに接続されたVolume Groupは、Nutanix APIを介して自動的に検出され、認証情報を割り当てなくても保護されます。 ゲスト内のiSCSIイニシエーターを介してVMを接続する場合、検出プロセスは接続されたVolume Groupも検出します。
 
-#. From the upper toolbar, click **(Key Icon) Credentials > + New**.
+#. 上部ツールバーから、 **(鍵アイコン) Credentials > + New**をクリックします。
 
-#. Fill out the following fields:
+#. 以下のフィールドに値を入力します:
 
    - **Name** - Local Windows Admin
    - **Username** - Administrator
-   - **Password** - *The password you defined when creating the HYCUBackupTest VM*
+   - **Password** - *HYCUBackupTest VM作成時に入力したパスワード*
 
-#. Click **Save**
+#. **Save**をクリックします。
 
-#. Select the *Initials*\ **-HYCUBackupTest** VM and click **(Key Icon) Credentials**. Select the **Local Windows Admin** credential and click **Assign** to map the credential to the selected VM.
+#. *Initials*\ **-HYCUBackupTest** VMを選択し、 **(鍵アイコン) Credentials**をクリックします。 **Local Windows Admin** 資格情報を選択し、 **Assign**をクリックすることでVMに割り当てます。
 
    .. note::
 
-     HYCU will automatically synchronize at regular intervals. If *Initials*\ **-HYCUBackupTest** does not appear in the list of available Virtual Machines, click **Synchronize** to pull the updated list from Prism.
+     HYCUは定期的に自動同期を行います。仮想マシンのリストに *Initials*\ **-HYCUBackupTest**が表示されない場合は、 **Synchronize**をクリックして、更新されたリストをPrismから取得します。
 
-   HYCU will validate the credentials can be used to authenticate to the VM, after a moment the **Discovery** column should display a green check indicating discovery was successful.
+   HYCUは、資格情報がVMへの認証に使用できることを検証します。しばらくすると、 **Discovery**列に、検出が成功したことを示す緑色のチェックが表示されます。
 
    .. figure:: images/16.png
 
    .. note::
 
-     HYCU also allows for Owners to be assigned to VMs or Shares being backed up. This assignment allows for the application of self-service policies, allowing Active Directory users or groups access to specific resources. Available roles for self-service include: Viewer (read-only), Administrator, Backup Operator, and Restore Operator.
+     HYCUは、VMまたは共有フォルダにOwner（所有者）を割り当てることもできます。 この割り当てにより、セルフサービスポリシーの適用が可能になり、Active Directoryユーザーまたはグループが任意のリソースにアクセスできるようになります。 セルフサービスで使用可能な役割には、Viewer（読み取り専用）、Administrator、Backup Operator、およびRestore Operatorが含まれます。
 
      .. figure:: images/19.png
 
-#. Select the *Initials*\ **-HYCUBackupTest** VM and click **(Shield Icon) Policies**.
+#. *Initials*\ **-HYCUBackupTest** VMを選択し、 **(盾アイコン) Policies**をクリックします。
 
-#. Select your customized **Fast** policy and click **Assign**.
+#. カスタムの **Fast**ポリシーを選択し、 **Assign**をクリックします。
 
-#. From the **HYCU** sidebar, click :fa:`bars` **> Jobs** to monitor the backup progress.
+#. **HYCU**サイドバーから、:fa:`bars` **> Jobs**をクリックし、バックアップの進捗を確認します。
 
-   Note in the details of the backup job that not only did HYCU leverage Nutanix Change Block Tracking APIs to backup the OS disk, but also the volume group mounted via iSCSI. Additionally, when directly attaching a VG to a VM in AHV (without using the in-guest iSCSI initiator), HYCU can backup and restore VGs without the need for in-guest discovery credentials.
+   HYCUがNutanix Change Block Tracking APIを利用してOSディスクだけでなく、iSCSIを介してマウントされたVolume Groupもバックアップされていることを、バックアップジョブの詳細から確認できます。さらに、Volume GroupをAHVのVMに（ゲスト内のiSCSIイニシエーターを使用せずに）直接接続する場合、HYCUはゲスト内の検出資格情報を必要とせずにVolume Groupをバックアップおよび復元できます。
 
    .. figure:: images/17.png
 
-#. Upon completion of the first full backup, select **Dashboard** from the sidebar and confirm all policies are compliant and 100% of VM's have been protected.
+#. 最初のフルバックアップが完了したら、サイドバーから **Dashboard**を選択し、すべてのポリシーが準拠していること、VMが100%保護されていることを確認します。
 
-#. Return to **Virtual Machines** and select the *Initials*\ **-HYCUBackupTest** VM. Click **Backup** to manually trigger an incremental backup.
+#. **Virtual Machines**に戻り、 *Initials*\ **-HYCUBackupTest** VMを選択します。 **Backup**をクリックし、手動で増分バックアップを実行します。
 
    .. figure:: images/18.png
 
-Backup from replica
+レプリカからのバックアップ
 ..................
 
-In multi-cluster Nutanix environments, customers will more than often configure Nutanix Protection Domain replication for disaster recovery purpose. HYCU is able to understand Nutanix Protection Domains (PDs) in such a manner that it can backup production VMs from their replica instead of performing a backup directly from the cluster where the VMs are running. This way HYCU will:
- - Not copy the data twice, thus cutting the bandwidth requirements in half
- - Not require any agents or proxies deployed and maintained in the production cluster
- - Still be able to perform recovery into original or any other cluster of customer choice.
+マルチクラスターNutanix環境では、ディザスタリカバリの目的で、Nutanix保護ドメイン（PD）のレプリケーションを構成することがよくあります。 HYCUは、VMが実行されているクラスターから直接バックアップを実行する代わりに、レプリカから本番VMをバックアップできるように、Nutanix保護ドメインを認識できます。 この結果、次の価値が得られます：
+ - データを2回コピーしない為、帯域幅要件を半分に削減
+ - リモートのクラスターにエージェントを配置して維持する必要がない
+ - 元のクラスターまたは指定した他のクラスターへの復元が可能
 
-This is useful for various scenarios:
- -  ROBO (Remote Office Branch Office) protection
- -  Multiple production sites that are replicating to a central data center
- -  Two production sites in active/active setup where HYCU can backup from replica to avoid secondary copy
- -  Production and DR site, where HYCU can run inside the DR site protecting production VMs without touching the PROD site
+これは、いくつかのシナリオでとても有益です:
+ -  ROBO (リモートオフィス/ブランチオフィス)の保護
+ -  複数の本番サイトから中央のデータセンターにレプリケートする環境
+ -  セカンダリコピーの取得を回避するため、レプリカからバックアップするアクティブ/アクティブの2拠点環境
+ -  HYCUがDRサイトで実行され、本番サイトに触れることなく本番VMを保護できる本番サイトとDRサイトの環境
 
  .. figure:: images/13b.png
 
-Restoring Backups
+バックアップからの復元
 +++++++++++++++++
 
-#. From the **HYCU** sidebar, click :fa:`bars` **> Virtual Machines >** *Initials*\ **-HYCUBackupTest**.
+#. **HYCU**サイドバーから、:fa:`bars` **> Virtual Machines >**に進み、 *Initials*\ **-HYCUBackupTest**をクリックします。
 
-#. In the **Details** table below, mouse over the **Compliancy** and **Backup Status** icons for additional information about each Restore Point, including size, time to perform backup, type of backup, etc.
+#. 下の **Details**テーブルから、 **Compliancy**列と **Backup Status**列のアイコンにカーソルを合わせると、サイズ、バックアップを実行する時間、バックアップのタイプなど、各リストアポイントに関する追加情報が表示されます。
 
    .. figure:: images/21.png
 
-#. Select the most recent incremental restore point and click **Restore VM**.
+#. 最新の増分リストアポイントを選択し、 **Restore VM**をクリックします。
 
-   HYCU offers the ability to overwrite or clone the entire VM, as well as the ability to selectively restore or clone individual VM disks or volume groups. Restoring volume groups is helpful in use cases where you would prefer to mount a disk to an existing VM.
+   HYCUは、VM全体を上書きまたはクローンする機能と、個々のVMディスクまたはVolume Groupを個別に復元またはクローンする機能を提供します。Volume Groupの復元は、ディスクを既存のVMにマウントしたい場合に役立ちます。
 
-   Additionally, both local disks and volume groups for a given restore point can be exported to an SMB share of NFS mount.
+   さらに、任意のリストアポイントのローカルディスクとVolume Groupの両方をNFSまたはSMB共有にエクスポートできます。
 
-#. Select **Clone VM** and click **Next**.
+#. **Clone VM**を選択し、 **Next**をクリックします。
 
    .. figure:: images/20.png
 
-   .. note:: HYCU will clone the VM, however there will be a warning since the VM has Volume Groups attached. You can safely disregard this warning
+   .. note:: HYCUはVMのクローンを作成しますが、VMにはVolume Groupが接続されているため、警告が表示されます。 この警告は安全に無視できます。
 
-#. Fill out the following fields and click **Restore**:
+#. 以下のフィールドに値を入力し、 **Restore**をクリックします:
 
    - **Select a Storage Container** - Original location
    - **New VM Name** - *Initials*\ -HYCUBackupTest-Clone
@@ -494,93 +494,93 @@ Restoring Backups
 
    .. note::
 
-     If multiple Nutanix clusters were configured, you could target a separate cluster for restoring your VM.
+     複数のNutanixクラスターで構成されている場合、VMの復元先として別クラスターを指定できます。
 
-     Selecting Automatic for Restore Instance will default to the fastest option. For this policy that would be the local Nutanix snapshot as opposed to the backup stored on the **NutanixVG** volume group. Manually selecting the instance is helpful when wanting to test RTO from backup or archive targets.
+     インスタンスの復元でAutomaticを選択すると、デフォルトで最速のオプションが選択されます。 このポリシーでは、 **NutanixVG** Volume Groupに保存されたバックアップとは対照的に、ローカルのNutanixスナップショットになります。 手動でインスタンスを選択すると、バックアップまたはアーカイブターゲットからRTOをテストするのに役立ちます。
 
-#. In **Prism > VM > Table**, power off your original *Initials*\ **-HYCUBackupTest** VM and **then** power on *Initials*\ **-HYCUBackupTest-Clone**.
-
-   .. note::
-
-     Because the original virtual machine and the restored one have the same network and iSCSI configuration settings after the restore, make sure both the virtual machines are not turned on at the same time to avoid any potential issues.
-
-#. Launch the VM console and verify all files and disks appear as expected within the VM. You can also verify that a clone of the Nutanix Volume has been created as well.
-
-   *Congratulations! You've just restored your first VM and volume group using HYCU.*
-
-#. In **Prism > VM > Table**, delete both your *Initials*\ **-HYCUBackupTest-Clone** VM and the cloned *Initials*\ **-BackupTestVG-**\ *Timestamp* Volume Group.
+#. **Prism > VM > Table**から、元の *Initials*\ **-HYCUBackupTest** VMをPower offし、 **その後** *Initials*\ **-HYCUBackupTest-Clone**をPower onします。
 
    .. note::
 
-      If the Volume Group fails to delete due to having attachments, **Update** the Volume Group and detach it from the *Initials*\ **-HYCUBackupTest-Clone** VM. Click **Save** and attempt to delete the Volume Group again.
+     元の仮想マシンと復元された仮想マシンは、同じネットワークおよびiSCSI設定を持つため、潜在的な問題を回避するために、両方の仮想マシンが同時に起動しないことを確認してください。
 
-#. Power on your original *Initials*\ **-HYCUBackupTest** VM.
+#. VMコンソールを起動し、すべてのファイルとディスクがVM内で期待どおりに表示されることを確認します。 Nutanix Volumeのクローンが作成されたことも確認できます。
 
-#. From the **HYCU** sidebar, click :fa:`bars` **> Jobs** and note the time required to perform the VM restore.
+   *おめでとうございます！ HYCUを使用して、最初のVMとVolume Groupを復元しました。*
 
-   Because the backup policy was configured to retain local snapshots on the Nutanix cluster, the restore operation should be nearly instant.
+#. **Prism > VM > Table**から、 *Initials*\ **-HYCUBackupTest-Clone** VMとクローンの *Initials*\ **-BackupTestVG-**\ *Timestamp* Volume Groupを削除します。
 
-Restoring VM Files
+   .. note::
+
+      アタッチされていることでVolume Groupの削除が失敗する場合、Volume Groupを **Update**し、Client下の *Initials*\ **-HYCUBackupTest-Clone** VM IQNの選択を解除します。 **Save**クリックして、再度Volume Groupを削除します。
+
+#. 元の *Initials*\ **-HYCUBackupTest** VMをPower onします。
+
+#. **HYCU**サイドバーから、:fa:`bars` **> Jobs**をクリックします。VMの復元には時間が掛かることがあります。
+
+   バックアップポリシーは、Nutanixクラスターのローカルスナップショットを保持するように設定されているため、復元作業ははほぼ瞬時に行われます。
+
+VMファイルの復元
 ..................
 
-In addition to restoring full VMs or disks, HYCU can also be used to directly restore files from a backed up VM or volume group. Often the need to restore VMs is for the sole purpose of obtaining an inadvertently deleted or corrupt file, the ability to restore files directly reduces the time and resources required to achieve the same end result.
+VMまたはディスク全体を復元するだけでなく、HYCUを使用して、バックアップされたVMまたはVolume Groupからファイルを直接復元することもできます。 多くの場合、VMを復元する必要性は、不注意で削除または破損したファイルを取得することのみを目的としています。ファイルを直接復元する機能は、同じ最終結果を達成するために必要な時間とリソースを削減します。
 
-#. From the **HYCU** sidebar, click :fa:`bars` **> Virtual Machines >** *Initials*\ **-HYCUBackupTest**.
+#. **HYCU**サイドバーから、:fa:`bars` **> Virtual Machines >**を選択し、 *Initials*\ **-HYCUBackupTest**をクリックします。
 
-#. Select the most recent incremental snapshot and click **Restore Files**.
+#. 最新の増分スナップショットを選択し、 **Restore Files**をクリックします。
 
-   This will mount the backup and allow the user to browse the local filesystem.
+   これにより、バックアップがマウントされ、ユーザーがローカルファイルシステムを参照できるようになります。
 
-#. Select one or more files you had previously created on the volume group (E:) and click **Next**.
+#. 以前にボリュームグループ（E :)に作成した1つ以上のファイルを選択し、 **Next**をクリックします。
 
    .. figure:: images/22.png
 
-#. Select **Restore to Virtual Machine** and click **Next**.
+#. **Restore to Virtual Machine**を選択し、 **Next**をクリックします。
 
-#. Fill out the following fields and click **Restore**:
+#. 以下のフィールドに値を入力し、 **Restore**をクリックします:
 
    - **Path** - Original location
    - **Mode** - Rename restored
-   - Select **Restore ACL** (Default)
+   - **Restore ACL** (デフォルトのまま)
 
-#. Launch a console for *Initials*\ **-HYCUBackupTest** and verify the file was restored.
+#. *Initials*\ **-HYCUBackupTest**コンソールを開き、ファイルが復元されていることを確認します。
 
    .. figure:: images/23.png
 
-   HYCU provides flexibility for restoring Nutanix VMs, VGs, and file data while maintaining very simple "Prism-like" workflows. HYCU takes advantage of native Nutanix storage APIs to allow for fast and efficient backup and restore operations.
+   HYCUは、非常にシンプルでPrismのようなワークフローを維持しながら、Nutanix VM、VG、およびファイルデータを復元する柔軟性を提供します。 HYCUはネイティブNutanixストレージAPIを利用して、高速で効率的なバックアップおよび復元を可能にします。
 
 
 .. _hycu-files:
 
-(Optional) Nutanix Files Integration
+(オプション) Nutanix Files 統合
 ++++++++++++++++++++++++++++++++++++
 
-HYCU is the first solution to provide fully integrated backup and restore capabilities for Nutanix Files using native Nutanix Change File Tracking (CFT) APIs.  Additionally, HYCU is capable of backing up both SMB and NFS shares in Nutanix Files.
+HYCUは、ネイティブのNutanix Change File Tracking（CFT）APIを使用してNutanix Filesに完全に統合されたバックアップおよび復元機能を提供する最初のソリューションです。 さらに、HYCUはNutanix FilesのSMB共有とNFS共有の両方をバックアップできます。
 
-While classic backup solutions heavily burden the file server by using the Network Data Management Protocol (NDMP) approach, needing to traverse the whole file tree to identify changed files, HYCU uses Nutanix storage layer snapshots and CFT to get the changed files instantly. This means HYCU backups remove impact on the file server and significantly reduce the data-loss risk by backing up file share changes on hourly basis, compared to classic, nightly file share backups.
+従来のバックアップソリューションは、ネットワークデータ・マネジメント・プロトコル（NDMP）を使用してファイルサーバーに大きな負荷をかけており、変更されたファイルを識別するためにファイルツリー全体を読み取る必要がありますが、HYCUはNutanixストレージレイヤースナップショットとCFTを使用して、変更されたファイル情報を即座に取得します。 つまり、HYCUバックアップは、ファイルサーバーへの影響を排除し、従来の夜間バックアップと比較して、変更ファイルを1時間ごとにバックアップすることにより、データ損失リスクを大幅に軽減します。
 
-In this exercise you will configure Nutanix Files as a backup source, as well as target a Nutanix Files SMB share for backup data.
+この演習では、Nutanix Filesをバックアップソースとして構成し、Nutanix Files SMB共有をターゲットにします。
 
-Adding SMB Share Target
+SMB共有をターゲットとして追加
 .......................
 
-.. note:: In this exercise, we will be using a Nutanix Files SMB share, however note that HYCU also supports NFS shares.
+.. note:: この演習では、Nutanix Files SMB共有を使用しますが、HYCUはNFS共有もサポートしています。
 
-For the purposes of this exercise, you will back up one Files share source to a Files share target. First you will define a share on your Files cluster that can be used as a target for backup data.
+この演習では、1つのファイル共有ソースをファイル共有ターゲットにバックアップします。 最初に、バックアップデータのターゲットとして使用するファイルクラスター上の共有を定義します。
 
-Files backups require either a NFS export, SMB share or S3 (Cloud) target, meaning Nutanix Buckets could also be used. iSCSI targets are currently unsupported as the files being backed up cannot be written directly to block storage.
+Filesのバックアップターゲットには、NFSエクスポート、SMB共有、またはS3（クラウド）ターゲットが必要です。つまり、Nutanix Bucketsも使用できます。 バックアップ対象のファイルをブロックストレージに直接書き込むことができないため、iSCSIターゲットは現在サポートされていません。
 
-#. In **Prism > File Server**, click **+ Share/Export**.
+#. **Prism > File Server**から、 **+ Share/Export**をクリックします。
 
-#. Fill out the following fields and click **Next > Next > Create**:
+#. 以下のフィールドに値を入力し、 **Next > Next > Create**をクリックします:
 
    - **Name** - *Initials*\ -HYCUTarget
    - **File Server** - *Initials*\ -Files
    - **Select Protocol** - SMB
 
-#. From the **HYCU** sidebar, click :fa:`bars` **> Targets**.
+#. **HYCU**サイドバーから、 :fa:`bars` **> Targets**をクリックします。
 
-#. Click **+ New**, fill out the following fields, and click **Save**:
+#. **+ New**をクリックし、以下のフィールドに値を入力し、 **Save**をクリックします:
 
    - **Name** - Files-HYCUTarget
    - **Concurrent Backups** - 1
@@ -594,38 +594,38 @@ Files backups require either a NFS export, SMB share or S3 (Cloud) target, meani
 
    .. figure:: images/24.png
 
-Configuring API Access
+APIアクセスの設定
 ......................
 
-HYCU requires credentials that allow it to access Nutanix Files REST APIs, including CFT.
+HYCUがNutanix Files REST APIsおよびCFTにアクセスするためには資格情報が必要です。
 
-#. In **Prism > File Server**, select your *Initials*\ **-Files** server and click **Manage roles**.
+#. **Prism > File Server**から、 *Initials*\ **-Files**サーバーを選択し、 **Manage roles**をクリックします。
 
    .. figure:: images/25.png
 
-#. Under **REST API Access Users**, click **+ New user**.
+#. **REST API Access Users**の下で、 **+ New user**をクリックします。
 
-#. Fill out the following fields and click **Save > Close**:
+#. 以下のフィールドに値を入力し、 **Save > Close**をクリックします:
 
    - **Username** - *Initials*\ -hycu
    - **Password** - nutanix/4u
 
    .. figure:: images/26.png
 
-Adding Nutanix Files Source
+Nutanix Filesをソースとして追加
 ...........................
 
-Protecting Files is similar to adding a hypervisor source to HYCU, with the exception that adding a Files source will provision an additional HYCU instance on the Nutanix cluster running Files. The purpose of this additional instance is to offload the file copy operations from the HYCU backup controller.
+Filesの保護は、ハイパーバイザーをHYCUに追加することと似ていますが、Filesをソースとして追加すると、Filesを実行しているNutanixクラスター上にHYCU Instanceが展開される点が異なります。 この追加インスタンスの目的は、HYCU Backup Controllerからファイルコピー操作をオフロードすることです。
 
-For AHV clusters with DHCP enabled, the additional HYCU instance can be provisioned automatically when adding the Files source. For ESXi or non-DHCP environments, the additional HYCU instance must be provisioned manually (similar to the original HYCU backup controller deployment). For complete details on manual deployment, see the `HYCU User Guide <https://support.hycu.com/hc/en-us/sections/115001018365-Product-documentation>`_.
+DHCPが有効になっているAHVクラスターの場合、Filesソースを追加すると、追加のHYCU Instanceを自動的に展開できます。 ESXiまたはDHCPが無効の環境では、HYCU Instanceを手動で展開する必要があります。（HYCU Backup Controllerの展開と同様）。手動による展開の詳細については`HYCU User Guide <https://support.hycu.com/hc/en-us/sections/115001018365-Product-documentation>`_を参照してください。
 
-#. From the **HYCU** toolbar, click :fa:`cog` **> Sources**.
+#. **HYCU**ツールバーから、:fa:`cog` **> Sources**をクリックします。
 
-#. Click **Nutanix Files** at the top menu
+#. 上部メニューから **Nutanix Files**をクリックします。
 
-   ..figure:: images/26a.png
+   .. figure:: images/26a.png
 
-#. Click **+ New** and fill out the following fields:
+#. **+ New**をクリックし、以下のフィールドに値を入力します:
 
    - **URL** - https://bootcampfs.ntnxlab.local:9440
    - **Nutanix Files Server Credentials > Username** - *Initials*\ -hycu
@@ -633,86 +633,86 @@ For AHV clusters with DHCP enabled, the additional HYCU instance can be provisio
    - **Backup Credentials > Username** - NTNXLAB\\Administrator
    - **Backup Credentials > Password** - nutanix/4u
 
-   The **Nutanix Files Server Credentials** is the REST API credential configured in the previous exercise, HYCU uses the API to understand which files have been updated since the previous backup. The **Backup Credentials** are for HYCU to access the share and perform the file copies, this user should have read access to all shares being backed up by HYCU.
+   **Nutanix Files Server Credentials**は先の演習で構成したREST API資格情報になります。HYCUはAPIを使用して、前回のバックアップ以降に更新されたファイルを把握します。 **Backup Credentials**は、HYCUが共有フォルダにアクセスしてファイルコピーをするためのものです。このユーザーには、HYCUによってバックアップされるすべての共有フォルダへの読み取りアクセス権が必要です。
 
    .. figure:: images/27.png
 
    .. note::
 
-     The need to access the shares to copy files is the reason HYCU was deployed on the **Secondary** network. During the :ref:`files` lab, the **Primary** network was chosen as the storage network, meaning other VMs on the **Primary** network would be unable to access the shares.
+     ファイルのコピーのために共有フォルダにアクセスする必要があるため、HYCUが **Secondary**ネットワークに展開されています。:ref:`files` の演習では、 **Primary**ネットワークがストレージネットワークとして選択されました。つまり、 **Primary**ネットワーク上の他のVMは共有にアクセスできません。
 
-#. Click **Save** to add the Files source and begin provisioning the file copy HYCU instance.
+#. **Save**をクリックしてFilesソースを追加し、HYCU instanceの展開を開始します。
 
-   You can observe the creation of the *Initials*\ **-HYCU-1** VM in Prism and monitor the overall status on the HYCU **Jobs** page. This process should take approximately 3 minutes to complete.
+   Prismから *Initials*\ **-HYCU-1** VMの作成を確認し、HYCU **Jobs**ページで全体的なステータスを監視できます。 このプロセスは完了するまでに約3分かかります。
 
    .. figure:: images/28.png
 
-Backing Up & Restoring Files
+Filesのバックアップと復元
 ............................
 
-Backup and restore for Files operates very similarly to VM/VG workflows, using the same customizable policies and owner/self-service constructs.
+Filesのバックアップと復元は、VM / VGワークフローと非常に似た動作をします。同じカスタマイズ可能なポリシーやOwner（所有者）/セルフサービス構造を使用します。
 
-#. Add the SMB target you created, *Initials*\-HYCUTarget** into customized **Fast** policy.
+#. 作成したSMBターゲット *Initials*\-HYCUTargetをカスタム **Fast**ポリシーに追加します。
 
-#. From the **HYCU** sidebar, click :fa:`bars` **> Shares**.
+#. **HYCU**サイドバーから、:fa:`bars` **> Shares**をクリックします。
 
-#. Select the **Marketing** share and click **(Shield Icon) Policies**.
+#. **Marketing**共有を選択し、 **(盾アイコン) Policies**をクリックします。
 
    .. note::
 
-     You may need to return to Prism and create an SMB share named 'Marketing' If you have created other shares that are populated with files you could select one of those as well.
+     Prismに戻り、"Marketing"という名前のSMB共有を作成する必要がある場合があります。Filesで他の共有フォルダを作成した場合は、それらのいずれかを選択することもできます。
 
-#. Select your customized **Fast** policy and click **Assign**.
+#. カスタム **Fast**ポリシーを選択し、 **Assign**をクリックします。
 
-#. Return to **Jobs** to verify the initial backup completes successfully.
+#. **Jobs**に戻り、初期バックアップが正常に完了したことを確認します。
 
-#. Using your Windows Tools VM or *Initials*\ **-HYCUBackupTest** VM, access your Marketing share (e.g. ``\\<Initials>-Files\Marketing``) and perform the following:
+#. Windows Tools VMまたは *Initials*\ **-HYCUBackupTest** VMを使用し、Marketing共有フォルダ（例：``\\<Initials>-Files\Marketing``）にアクセスし、以下を実行します:
 
-   - Update a file (e.g. edit a text file)
-   - Add a new file
-   - Delete an existing file
+   - ファイルの更新
+   - 新しいファイルの追加
+   - 既存ファイルの削除
 
-#. From the **HYCU** sidebar, click :fa:`bars` **> Shares**.
+#. **HYCU**サイドバーから、:fa:`bars` **> Shares**をクリックします。
 
-#. Select the **Marketing** share and click **Backup** to force an incremental backup.
+#. **Marketing**フォルダを選択し、 **Backup**から増分バックアップを実行します。
 
-   Depending on the size of the files added, the incremental backup should complete in under 1 minute.
+   追加ファイルのサイズ次第ですが、増分バックアップは1分以内に完了するはずです。
 
-#. Under **Restore Points** you can select the latest restore point and hover over **Backup Status** to determine both the number of files changed since the previous backup, as well as the incremental size of the backup.
+#. **Restore Points**下で最新のリストアポイントを選択し、 **Backup Status**にカーソルを合わせると、前回のバックアップ以降に変更されたファイルの数と、バックアップの増分サイズの両方を確認できます。
 
    .. figure:: images/29.png
 
-   Do these values accurately reflect the files added/changed to your Marketing share?
+   これらの値は、Marketing共有フォルダに追加/変更されたファイルを正確に反映していますか？
 
-   Note that the target in the image above is **Files-HYCUTarget**. How was this determined without editing the backup policy?
+   上の画面のターゲットは **Files-HYCUTarget**であることに注意してください。これは、バックアップポリシーを編集せずにどのように決定されましたか？
 
-#. Select the original, full backup restore point and click **Browse & Restore Files**.
+#. 元のフルバックアップのリストアポイントを選択し、 **Browse & Restore Files**をクリックします。
 
    .. figure:: images/30.png
 
-#. Select the file you had previously deleted from the Marketing share and click **Next**.
+#. 以前にMarketing共有フォルダから削除したファイルを選択し、 **Next**をクリックします。
 
-#. Target the original location and click **Restore**.
+#. 元の場所をターゲットにして、 **Restore**をクリックします。
 
-#. Return to your client VM console and refresh the Marketing share to view your previously deleted file.
+#. クライアントVMのコンソールに戻り、Marketing共有フォルダを更新して、以前に削除したファイルを表示します。
 
    .. figure:: images/31.png
 
-   Within a few clicks, administrators or end users can easily restore individual files, folders, or entire Nutanix Files shares using HYCU and CFT APIs.
+   数回のクリックで、管理者またはエンドユーザーは、HYCUおよびCFT APIを使用して、個々のファイル、フォルダ、またはNutanix Files共有全体を簡単に復元できます。
 
-Takeaways
+重要なポイント
 +++++++++
 
-What are the key things you should know about **HYCU**?
+**HYCU**について知っておくべき重要なことは何ですか？
 
-- HYCU provides a full suite of VM, VG, and application backup capabilities for AHV & ESXi.
+- HYCUは、AHVおよびESXiのVM、VG、およびアプリケーションに対する完全なバックアップ機能を提供します。
 
-- HYCU is the first product to leverage Nutanix snapshots for both backup and recovery, eliminating VM stun and making it possible to recover rapidly from local Nutanix snapshots.
+- HYCUは、バックアップと復元の両方にNutanixスナップショットを活用する最初の製品であり、VMスタンをなくし、ローカルのNutanixスナップショットから迅速に復元できるようにします。
 
-- HYCU can also use Nutanix nodes as a backup storage target, providing Nutanix sellers an opportunity to increase deal size.
+- HYCUは、Nutanixノードをバックアップストレージターゲットとして使用することもでき、Nutanixビジネスの規模拡大に貢献します。
 
-- Similar to Prism, HYCU offers an easy to use HTML5 management console.
+- Prismと同様に、HYCUは使いやすいHTML5管理コンソールを提供します。
 
-- HYCU is the only solution for ROBO customers that reduces network bandwidth by 50% by backing up from VM replicas.
+- HYCUは、VMレプリカからバックアップすることによりネットワーク帯域幅を最大50％削減する、ROBO環境向けの唯一のソリューションです。
 
-- HYCU offers the first scale-out backup and recovery for Nutanix Files, reducing resource requirements and time to backup by 90%.
+- HYCUはNutanix Filesに初めてスケールアウトのバックアップと復元を提供した製品で、リソース要件とバックアップ時間を最大90％削減します。

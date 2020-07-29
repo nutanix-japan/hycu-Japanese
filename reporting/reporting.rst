@@ -1,111 +1,112 @@
 .. _reporting:
 
 ----------------
-HYCU: Reporting
+HYCU: レポーティング
 ----------------
 
-*The estimated time to complete this lab is 60 minutes.*
+*この演習の推定所要時間は60分です。*
 
-Overview
+概要
 ++++++++
-HYCU’s unique and powerful reporting runs on HYCU controller Virtual machine and does not require any additional infrastructure. This is a standard offering which is included as a part of HYCU’s base license. HYCU provides you all the basic options you would expect in a reporting tool, such as scheduling, delivery in various formats and ad-hoc exports. However, on top of this, HYCU reporting provides you with amazing flexibility of creating customer reports using practically every field from HYCUs internal database, combined with data filtering, time selection and various report types. Let’s now walk through each of these options
+HYCUのユニークで強力なレポート機能は、HYCU Controller VMで実行され、追加のインフラストラクチャを必要としません。これは、HYCUの基本ライセンスに含まれる標準的な機能です。スケジューリング、さまざまな形式での配信、アドホックエクスポートなど、レポートツールで期待されるすべての基本オプションを提供します。加えて、HYCUの内部データベースのほぼすべてのフィールドをデータフィルタリング、時間選択、さまざまなレポートタイプと組み合わせて使用することで、顧客レポートを作成するという驚くべき柔軟性を提供します。では、これらの各オプションについて見ていきましょう。
 
-#. Login to HYCU as the admin user. In HYCU select > left panel > *Reports*
+#. 管理者としてログインします。左側パネル > *Reports*に進みます。
 
 .. figure:: images/1.png
 
-When you click on reports, you can actually view several out of the box backup reports ready to be used. You can select any report and click on the preview |preview| button to view the output of a given report. In this exercise, let’s preview the most commonly used backup reports – “VM backup status” report. This report details the backup status of all VMs in the last 24 hours.
+Reportsをクリックすると、既定ですぐに使用できるバックアップレポートが表示されます。任意のレポートを選択してPreviewボタン |preview| をクリックすると、任意のレポートの出力を表示できます。この演習では、最も一般的に使用されるバックアップレポート“VM backup status”レポートをプレビューしてみましょう。
+このレポートは、過去24時間のすべてのVMのバックアップステータスの詳細を表示します。
 
 .. |preview| image:: images/2.png
 
 .. figure:: images/3.png
 
-As you can see, this report has the following key details:
+ご覧のとおり、このレポートには次の重要な項目が含まれます：
    - VM name
-   - Backup completion status (OK for backup success; FATAL for backup failure)
-   - Backup type (Incremental or FULL backup)
+   - Backup completion status （バックアップ成功の場合はOK、バックアップ失敗の場合はFATAL）
+   - Backup type （フルバックアップまたは増分バックアップ）
    - Backup policy
-   - Backup duration with start time and end time
-   - Amount of data transferred
+   - Backup duration with start time and end time（開始時刻と終了時刻を含むバックアップ期間）
+   - Amount of data transferred（転送されたデータ量）
 
 
-You can export this report by clicking on little download icon  |download-icon| this will present you with the following options to export the report.
+小さなダウンロードアイコン |download-icon| をクリックすると、このレポートをエクスポートできます。これにより、レポートをエクスポートするための次のオプションが表示されます。
 
 .. |download-icon| image:: images/4.png
 
 .. figure:: images/5.png
 
-Simplest way of creating a report to fit your needs is to edit an existing report. For instance, let’s take the same VM backup status report. You can edit that report to include additional information that provides more details of your backed up VMs, and let’s get the report for the last week instead of just 24 hours.
-Under *Reports* > Click on “*VM backup status*” report > Click on the *Edit* button
+要件に合わせたレポートを作成する最も簡単な方法は、既存のレポートを編集することです。例えば、同じ“VM backup status”レポートを見てみましょう。
+そのレポートを編集し、バックアップされたVMの詳細な情報を含めることができます。24時間ではなく、先週のレポートを取得しましょう。 *Reports*から“*VM backup status*”レポートをクリックし、 *Edit*ボタンをクリックします。
 
-This will provide a slightly different view of the report. On the left-hand side, you will be able to see most of the HYCUs metadata information, which you can use for reporting by drag & dropping it to X or Y axis.
+これにより、レポートの表示が少し変わります。左側には、HYCUメタデータ情報のほとんどが表示され、X軸またはY軸にドラッグアンドドロップしてレポートに使用できます。
 
 .. figure:: images/6.png
 
-Here, let’s drag and drop the following fields from the Report Tag Pool (on the left hand-side) to Y-AXIS TAGS in order to add more details into the report:
-   - “Avg Change Rate” -> Right in between “Job duration” and “Size of backed up data” fields
-      - This provides the data change rate between backups
-   - “Compliancy Status” -> Right in between “Status” and “Backup Type” fields
-      - This provides info on whether the backup job completed on time. You can have compliance status failed (status to RED) even if the backup job completes successfully.
-   - “Owner” -> Right below “VM name” field
-      - This provides you HYCU-user group who has explicit rights to backups on the given VM. This is direct reference to the Self-service section
-   - “Target name” -> At the very end
-      - This provides you backup target location of a given VM. We do have a separate report detailing the backup target information
+ここで、レポートタグプール（左側）から次のフィールドをY-AXISタグにドラッグアンドドロップし、レポートに項目を追加します：
+   - “Avg Change Rate” -> 右側の“Job duration” と “Size of backed up data” フィールドの間
+      - これは、バックアップ間のデータ変更率を提供します。
+   - “Compliancy Status” -> 右側の“Status” と “Backup Type” フィールドの間
+      - これにより、バックアップジョブが時間どおりに完了したかどうかに関する情報が提供されます。バックアップジョブが正常に完了した場合でも、コンプライアンスステータスが失敗（ステータスが赤）になることがあります。
+   - “Owner” -> 右側の“VM name” フィールドの下
+      - これにより、任意のVMのバックアップに対する明示的な権限を持つHYCUユーザーグループが提供されます。これは、セルフサービスセクションを直接参照しています。
+   - “Target name” -> 最後に
+      - これにより、任意のVMのバックアップターゲットの場所が提供されます。バックアップターゲット情報の詳細を示す別のレポートがあります。
 
-Once you’re done adding the fields this is how your Y-AXIS TAGS would look like:
+フィールドの追加が完了すると、Y-AXISタグは次のようになります：
 
 .. figure:: images/7.png
 
-From the dropdown in the upper row select the 1 week time instead of 24 hours and simply change the name of the report on the top-left hand side of the screen to create a new report
+上の行のドロップダウンから、24時間ではなく1週間の時間を選択し、画面の左上にあるレポートの名前を変更して、新しいレポートを作成します。
 
 .. figure:: images/8.png
 
-Click on “*Save As*” on the top right-hand side of the screen to save the newly created report
+画面右上の “*Save As*”をクリックして、新しく作成したレポートを保存します。
 
-You should be able to view the saved report under the *Reports* section. Click *Generate* to generate the report at that exact time, using current HYCU data which is residing in HYCU’s reporting database. HYCU’s reporting database is getting synchronized with the main database every 12 hours.
+保存したレポートは、 *Reports*セクションに表示されます。 *Generate*をクリックして、HYCUのレポートデータベースにある現在のHYCUデータを使用して、正確な時間にレポートを生成します。HYCUのレポートデータベースは、12時間ごとにメインデータベースと同期しています。
 
-With HYCU, you can also schedule any backup report on a regular basis to generate a historical set of reports allowing you to have insight into the product over period of time. In order not to lose any data in the reports, make sure reporting schedule is shorter than the shortest retention set in the HYCU policies.
+HYCUを使用すると、バックアップレポートを定期的にスケジュールして、一連の履歴レポートを生成し、一定期間にわたる製品の傾向を得ることができます。レポートのデータを失わないようにするために、レポートスケジュールがHYCUポリシーで設定された最短保持期間よりも短いことを確認してください。
 
-Let’s click on our newly created report “*VM backup status detailed*” > Click on the *Scheduler*
+新しく作成したレポート “*VM backup status detailed*”をクリックし、 *Scheduler*をクリックします。
 
 .. figure:: images/9.png
 
-Choose Daily under the Interval dropdown and enable the “*SEND*” toggle switch
+IntervalドロップダウンからDailyを選択し、“*SEND*”トグルスイッチを有効にします。
 
 .. figure:: images/10.png
 
-This will enable you to email the reports that get generated in PDF, PNG or CSV formats. Specify desired email address and click *Schedule*. In order to email the report, you will need to configure the SMTP settings from the HYCU Administration menu.
+これにより、PDF、PNG、またはCSV形式で生成されたレポートを電子メールで送信できます。目的のメールアドレスを指定し、 *Schedule*をクリックします。レポートを電子メールで送信するには、HYCU管理メニューからSMTPを設定する必要があります。
 
-In case you have multiple HYCU’s or you want to share your custom built report with community, HYCU also allows you export and import your favorite backup reports. For instance, if you wanted to use the newly created report “*VM backup status detailed*” in another HYCU controller, you will have to perform the following steps:
+複数のHYCU Controllerがある場合、またはカスタムレポートをコミュニティと共有したい場合は、お気に入りのバックアップレポートをエクスポートおよびインポートすることもできます。例えば、新しく作成したレポート“*VM backup status detailed*”を別のHYCU Controllerで使用する場合は、次の手順を実行する必要があります：
 
-- On the source HYCU backup controller:
-  - Navigate to Reports
-  - Simply click on the “VM backup status detailed” report and click on “Export” on the top left-hand side of the screen. This will export the report configuration in JSON format and download it locally to your computer.
-- On the destination HYCU backup controller:
-  - Navigate to Reports
-  - Click on the “import” button
+- 送信元のHYCU backup controller：
+  - Reportsに移動
+  - “VM backup status detailed”レポートをクリックし、 画面の左上にある “Export”をクリックします。これにより、レポート構成がJSON形式でエクスポートされ、ローカルのコンピューターにダウンロードされます。
+- 送信先のHYCU backup controller：
+  - Reportsに移動
+  - “import”ボタンをクリック
 
   .. figure:: images/11.png
 
-  - Click on the “*Browse*” button to add the newly imported JSON file from the source HYCU backup controller:
+  - “*Browse*”ボタンをクリックし、送信元から新しくインポートされたJSONファイルを追加します：
 
   .. figure:: images/12.png
 
-- As you can see, HYCU can recognize the report your importing in as it automatically fills in the name and the report description
-- Click on the “*Import*” button to import the report on the destination HYCU controller
+- ご覧のとおり、HYCUは名前とレポートの説明を自動的に入力するため、インポートするレポートを認識できます。
+- “*Import*”ボタンをクリックし、レポートをインポートします。
 
-HYCU can also help you in creating brand new custom reports to fit your exact needs. Unlike editing existing reports, in this exercise, we’ll be creating a brand-new report from scratch.
+HYCUは、正確な要件に合わせて新しいカスタムレポートを作成する際にも役立ちます。既存のレポートの編集とは異なり、この演習では、まったく新しいレポートをゼロから作成します。
 
-Report 1 – Target utilization per source
+Report 1 – ソース毎のターゲット使用率
 ========================================
 
-In this report, our goal is to create a high-level information on how our backup targets are being utilized from backup sources (which includes hypervisors, Nutanix files and physical hosts)
+このレポートでは、バックアップソース（ハイパーバイザー、Nutanix Files、物理ホストを含む）からバックアップターゲットの利用状況に関するハイレベルの情報を作成します。
 
-- Navigate to *Reports*
-- Click on *New*
-  - This will show case the entire reporting schema
-- Simply clear the X-AXIS TAGS and Y-AXIS TAGS.
-  - Click on the clear button as shown below
+- *Reports*に移動
+- *New*をクリック
+  - これにより、レポートスキーマ全体が表示されます。
+- X-AXISタグとY-AXISタグをクリアします。
+  - 以下に示すように、Clearボタンをクリックします。
 
   .. figure:: images/13.png
 
@@ -113,24 +114,24 @@ In this report, our goal is to create a high-level information on how our backup
 
   .. figure:: images/15.png
 
-- Under the report type, choose “Stacked bar chart”
-- On the X-AXIS TAGS, choose “Target Name” and on Y-AXIS TAGS, choose “source Name”
-- This is how the end-report would look like:
+- Report typeの下で、“Stacked bar chart”を選択します。
+- X-AXISタグで“Target Name”を選択し、Y-AXISタグで“source Name”を選択します。
+- これは、最終レポートがどのようになるかを示しています：
 
 .. figure:: images/16.png
 
-- Provide a name to the report under the *NAME* field and click on *Save*
+- レポートの *NAME*フィールドに名前を入力し、 *Save*をクリックします。
 
-Report 2 – VM backup size per target for specific User Group
+Report 2 – 特定のユーザーグループのターゲットあたりのVMバックアップサイズ
 ============================================================
 
-The goal of this report is to provide a VM backup target utilization in a graphical view. To spice it up we will make the report for a single HYCU tenant User Group which is perfect for service providers looking for a way to see how one of their customers is utilizing the targets, and potentially even bill on top of this.
+このレポートは、VMバックアップのターゲット使用率をグラフィカルビューで提供することです。より面白くするために、単一のHYCUテナントユーザーグループのレポートを作成します。これは、顧客の1人がどのようにターゲットを利用しているのか確認する方法を探しているサービスプロバイダーに最適であり、この上で請求の仕組みを構成する可能性があります。
 
-- Navigate to Reports
-  - Click on *New*
-  - This will show case the entire reporting schema
-- Simply clear the X-AXIS TAGS and Y-AXIS TAGS.
-  - Click on the clear button as shown below
+- Reportsに移動
+  -  *New*をクリック
+  - これにより、レポートスキーマ全体が表示されます。
+- SX-AXISタグとY-AXISタグをクリアします。
+  - 以下に示すように、Clearボタンをクリックします。
 
   .. figure:: images/13.png
 
@@ -138,11 +139,11 @@ The goal of this report is to provide a VM backup target utilization in a graphi
 
   .. figure:: images/15.png
 
-- Under the report type, choose “Horizontal Stacked bar chart”
-- On the X-AXIS TAGS, choose “VM Name”, “Size of Backed up Data” and on Y-AXIS TAGS, choose “target Name” and “Owner”
-- On the X-AXIS TAGS select Owner dropdown and select only a single User Group
-- This is how the end-report would look like:
+- Report typeの下で、“Horizontal Stacked bar chart”を選択します。
+- X-AXISタグで“VM Name”と“Size of Backed up Data”を選択し、Y-AXISタグで“Target Name”と“Owner”を選択します。
+- Y-AXIS TAGSタグでOwnerドロップダウンを選択し、1つのUser Groupを選択します。
+- これは、最終レポートがどのようになるかを示しています：
 
   .. figure:: images/17.png
 
-- Provide a name to the report under the *NAME* field and click on *Save*
+- レポートの *NAME*フィールドに名前を入力し、 *Save*をクリックします。
