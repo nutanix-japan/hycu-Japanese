@@ -1,115 +1,116 @@
 .. _protectingapps:
 
 -----------------------------------
-HYCU: Protecting Applications (SQL)
+HYCU: アプリケーションの保護（SQL）
 -----------------------------------
 
-*The estimated time to complete this lab is 60 minutes.*
+*この演習の推定所要時間は60分です。*
 
-Overview
+概要
 ++++++++
-HYCU has a very unique ability to protect applications without requiring deployment or maintenances of agents on the client virtual machines. HYCU will discover what applications are running in the environment as well as protect them in the most appropriate manner using application consistent backups. This enables customers to focus on their applications instead of the virtual machines requiring many configuration steps to perform adequate backup. In this lab we will use SQL Server but the same principles are used to backup and recover other applications.
+HYCUには、仮想マシンでのエージェント展開やメンテナンスを必要とせずにアプリケーションを保護する非常にユニークな機能があります。また、仮想マシン上で実行されているアプリケーションを検出し、アプリケーション整合性を維持した最も適切な方法でそれらを保護します。これにより、仮想マシンのバックアップに多くの構成手順を必要とすることなく、顧客はアプリケーションに集中できます。この演習ではSQL Serverを使用しますが、他のアプリケーションのバックアップと復元にも同じ仕組みが使用されます。
 
-Assigning credentials
+資格情報の割り当て
 =====================
 
-#. Let’s start by selecting the VM that has SQL Server installed and then select *Credentials* in the upper right corner of the HYCU UI.
+#. SQL ServerがインストールされているVMを選択し、HYCU UIの右上隅にある *Credentials*（資格情報）をクリックします。
 
-#. Once the credentials screen appears, then add the credentials (using *+New*) for the SQL server. It is required that the credentials have sysadmin privileges on the VM.
+#. 資格情報画面が表示されたら、SQLサーバーの資格情報（ *+New*を使用）を追加します。資格情報にはVMに対するsysadmin権限が必要です。
 
-#. Once the credentials are entered, click *Assign* to assign the credentials to the VM and start the discovery process.
+#. 認証情報を入力したら、 *Assign*をクリックして資格情報をVMに割り当て、検出プロセスを開始します。
 
    .. figure:: images/1.png
 
-#. Note that when assigning the credentials, the discovery is automatically launched. Discovery will use WinRM on windows and SSH on Linux VMs.
+#. 資格情報を割り当てると、検出が自動的に起動されることに注意してください。検出はWindowsではWinRM、Linux VMではSSHを使用します。
 
    .. figure:: images/2.png
 
    .. figure:: images/3.png
 
-#. In most of the cases, based on machine defaults, discovery will succeed without any additional steps required. In case of failure, it will be simplest to troubleshoot using the `following KB <https://support.hycu.com/hc/en-us/articles/115003880025-Troubleshooting-Application-discovery-failed-Windows->`_.
+#. ほとんどの場合、マシンの初期設定に基づいて、追加の手順を必要とせずに検出が成功します。失敗した場合は、`こちらのKB <https://support.hycu.com/hc/en-us/articles/115003880025-Troubleshooting-Application-discovery-failed-Windows->`_を使用してトラブルシューティングするのが最も簡単です。
 
-#. Once discovery has completed, select Applications on the left side of the HYCU UI and you will see the SQL instance appear.  Select this instance by clicking on the name and you will notice a window appear in the lower left corner of the screen.  This window has details about the application instance.
+#. 検出完了後、HYCU画面の左側にあるApplicationsを選択すると、SQLインスタンスが表示されます。名前をクリックしてこのインスタンスを選択すると、画面の左下隅にウィンドウが表示されます。このウィンドウには、アプリケーションインスタンスに関する詳細が表示されます。
 
    .. figure:: images/4.png
 
-#. Note that the discovery icon for the selected SQL application is marked green. This means that the provided credentials had the required backup admin privileges on the SQL database. If this had not been the case, we would have needed to configure a different OS user which has these permissions. This can be achieved by clicking on *Configuration*, specifying the toggle “Use VM credentials with access to the application” and entering them.
+#. 選択したSQLアプリケーションのDiscoveryアイコンが緑色でマークされていることに注意してください。これは、提供された資格情報には、SQLデータベースに対する必要なバックアップ管理者特権があることを意味します。そうでない場合は、権限を持つ別のOSユーザーを設定する必要があります。アカウント変更を行うには、 *Configuration*をクリックし、“Use VM credentials with access to the application”を有効化の上、資格情報を入力します。
 
    .. figure:: images/5.png
 
-#. Note also two other very important options:
+#. 他の2つの重要なオプションにも注意してください：
 
    .. figure:: images/6.png
 
-#. If customers are taking care of log truncation on their own, which usually done to truncate logs on 15 minute intervals, HYCU needs to be made aware of this so it does not truncate the logs. You can disable HYCU log truncation using the “Backup and truncate SQL transction logs” toggle. If this options is configured, note that HYCU will leave the database in recovery mode after restore, so manually backed up logs can be applied to it.
+#. 顧客が自分でトランザクションログの切り捨てを実行している場合、通常は15分間隔でログを切り捨てますが、HYCUはこれを認識し、ログを切り捨てないようにする必要があります。“Backup and truncate SQL transaction logs”トグルを無効にしてください。オプションが設定されている場合、HYCUは復元後にデータベースをリカバリモードのままにするため、手動でバックアップしたログをデータベースに適用できることに注意してください。
 
    .. figure:: images/7.png
 
-   When performing a backup, HYCU will trigger a SQL log backup which will copy the logs to a temporary location. These logs will be backed up as part of VM snapshot and truncated at the end. It is a best practice to keep these logs on a separate disk and specify the path to it. This will enable Faster point in time recovery as HYCU will be able to recover just the disk holding the logs.
+   バックアップを実行すると、HYCUはSQLログバックアップを起動し、ログを一時的な場所にコピーします。これらのログはVMスナップショットの一部としてバックアップされ、最後に切り捨てられます。これらのログを別のディスクに保存し、そのパスを指定することをお勧めします。これにより、HYCUはログを保持しているディスクのみを復元できるため、より高速なポイントインタイムリカバリが可能になります。
 
-#. Exit out of this screen without making any changes.
+#. 変更を加えずにこの画面を終了します。
 
-#. Select Policies in the top right corner of the UI to assign a policy to the application to start the backups.  For this exercise, apply the Gold policy.
+#. 画面の右上隅にあるPoliciesを選択し、ポリシーをアプリケーションに割り当てます。この演習では、Goldポリシーを割り当てます。
 
    .. figure:: images/8.png
 
-#. Once the policy is applied, the backup will start automatically.
+#. ポリシーが適用されると、バックアップが自動的に開始されます。
 
    .. figure:: images/9.png
 
-   By double-clicking on the green job progress bar, HYCU will bring up the Jobs page and display the job details.  You will be able to follow all the steps HYCU is taking to perform an application consistent backup. In short, HYCU will quiesce the databases to assure their consistency, snapshot the VM (whcih includes all of the disks) and unfreeze the database afterwards. After backing up the changed blocks using the CBT API, it will also truncate the logs (unless specified differently).
+   緑色のジョブ進捗状況バーをダブルクリックすると、Jobsページが表示され、ジョブの詳細が表示されます。アプリケーション整合性バックアップを実行するために、HYCUが実行しているすべての手順を確認できます。つまり、HYCUはデータベースを静止して整合性を確保し、VMのスナップショット（すべてのディスクを含む）を実行します。その後にデータベースのフリーズを解除します。変更されたブロックをCBT APIを使用してバックアップした後、ログは切り捨てられます（別途指定されている場合を除く）。
 
    .. figure:: images/10.png
 
-#. Once the backup is completed, clear the filter by clicking on the X in the search box at the top of the screen
+#. バックアップ完了後、画面上部の検索ボックスのXをクリックしてフィルターをクリアします。
 
    .. figure:: images/11.png
 
-#. Select the Application pane (left hand side of the HYCU UI) and then select the SQL instance.  You will notice that the job is complete and the backup status is green.  By hovering your cursor over the green status button you will see that the backup was application consistent and how long it took to perform a full backup.
+#. Applicationsメニュー（画面左側）を選択し、SQLインスタンスを選択します。ジョブが完了し、バックアップステータスが緑色であることがわかります。緑色のステータスボタンの上にカーソルを置くと、バックアップがアプリケーション整合性を保ち、フルバックアップの実行にかかった時間がわかります。
 
    .. figure:: images/12.png
 
-#. Manually launch another backup of this SQL instance by selecting “Backup” at the top right center of the UI.  A window will pop up asking if you want to perform a full backup.  Do not select the full backup option as we want to perform an incremental.
+#. 画面右上中央にあるBackupを選択して、このSQLインスタンスの手動バックアップを実行します。フルバックアップを実行するかどうかを尋ねるウィンドウが表示します。増分を実行するため、フルバックアップオプションは選択しないでください。
 
    .. figure:: images/13.png
 
-   Note that incremental was much faster.
+   増分バックアップは、はるかに高速であったことに注意してください。
 
-Restoring SQL Server
+SQLサーバーの復元
 ====================
-To restore a complete SQL Server VM, its instance or a single DB, select the application and then select the backup you wish to use for the restore.  For this exercise, let’s select the full backup and click on Restore (center right on the screen). Since application backup is backing up the complete virtual machine by snapshotting all the disks, you can restore the whole server. The same can be achieved from the Virtual Machines context, where you can use the same app backups also for a single file or folder recovery.
+完全なSQLサーバーVM、そのインスタンス、または単一のDBを復元するには、アプリケーションを選択してから、復元に使用するバックアップを選択します。この演習では、フルバックアップを選択して、Restore（画面の右中央）をクリックします。アプリケーションのバックアップでは、すべてのディスクのスナップショットを作成して仮想マシン全体をバックアップしているため、サーバー全体を復元できます。同じことは、仮想マシンのコンテキストからも実現できます。この場合、単一のファイルまたはフォルダの復元にも同じアプリケーションバックアップを使用できます。
 
-#. For this lab, let’s focus on granular SQL recovery by selecting *Restore databases* and clicking *Next*
+#. この演習では、 *Restore databases*を選択して *Next*をクリックすることにより、SQLの詳細な復元に焦点を当てます。
 
    .. figure:: images/14.png
 
    .. figure:: images/15.png
 
-#. Now you will see that you have the option to restore the entire instance or an individual database.  If you select the entire instance, all databases will be restored.
+#. インスタンス全体または個々のデータベースを復元するオプションがあることがわかります。インスタンス全体を選択すると、すべてのデータベースが復元されます。
 
    .. figure:: images/16.png
 
-   HYCU restore gives you an abundance of recovery options, let’s explore different use cases.
+   HYCUは豊富な復元オプションを提供します。さまざまな使用例を見てみましょう。
 
-#. For moving production data into a Dev/Test SQL instance you can use *Target Instance* dropdown menu to select a different SQL instance.  In this lab, we do not have a separate SQL instance, but the screen shot below shows how this can be done if you have more than one SQL instance in your Nutanix environment which has been discovered by HYCU.
+#. 本番データをDev/Test SQLインスタンスに移動するには、 *Target Instance*ドロップダウンメニューを使用して、別のSQLインスタンスを選択できます。この演習では、別のSQLインスタンスはありませんが、下のスクリーンショットは、HYCUによって検出されたNutanix環境に複数のSQLインスタンスがある場合の実行方法を示しています。
 
    .. figure:: images/17.png
 
-#. More than often in case of database corruption or human error, customers need to go back into exact point in time before the accident occurred. HYCU will restore the logs from the subsequent restore point (remember the importance of temporary log location kept separate) and replay them to the specified point in time.
+#. 多くの場合、データベースの破損や人為的エラーの場合、顧客は事故が発生する前の正確な時点に戻る必要があります。HYCUは、後続のリストアポイントからトランザクションログを復元し（一時的なログを別の場所の保存することの重要性を忘れないでください）、指定した時点までログを再生します。
 
    .. figure:: images/18.png
 
-#. To achieve this simply select the individual database, specify the desired *Point in time* and click *Next*.
+#. これを実現するには、個々のデータベースを選択し、 *目的の日時*を指定して *Next*をクリックします。
 
-#. Following menu gives you an ability not to overwrite the database, but restore it under a different name (prefix) and location. This can be useful for testing purposes but can also give you the ability to extract a single table from a database restored to a temporary location.
+#. 次のメニューを使用すると、データベースを上書きせずに、別の名前（プレフィックス）と場所でデータベースを復元できます。これはテスト目的には役立ちますが、一時的な場所に復元されたデータベースから単一のテーブルを抽出する機能も提供します。
 
    .. figure:: images/19.png
 
-#. In this case let’s simply perform overwrite restore by clicking *Restore*.
+#. 今回は単純に *Restore*をクリックして上書き復元を実行してみましょう。
 
-Summary
+まとめ
 =======
-You have now completed the exercise of backing up and recovering a standard SQL instance.  HYCU can also backup and recover AlwaysOn SQL as well as SQL Failover Clusters.
-HYCU can also backup and perform granular recovery for Microsoft Exchange incl. DAG (database and mailbox level recovery) and for Oracle (tablespace level recovery).
-For AD, HYCU can perform application consistent backups, for granular recovery it is recommended to simply use AD recycle bin.  Restores of AD VMs is performed using non-authoritative restores.  Once the AD VM is restored and joined back into the domain, it will synchronize with the domain.  To perform and authoritative restore please reach out to HYCU support.
-For up to date list of application integrations check out latest HYCU compatibility matrix at support.hycu.com. Bear in mind that even if HYCU does not integrate directly with an application, application consistent backup can be achieved through pre and post exec scripts.
+これで標準的なSQLインスタンスのバックアップと復元の演習が完了しました。HYCUは、Always On SQLとSQLフェールオーバークラスターのバックアップや復元にも対応しています。
+また、Microsoft Exchangeを含むバックアップや詳細な復元も可能です。DAG（データベースおよびメールボックスレベルの復元）およびOracle（テーブルスペースレベルの復元）です。
+ADの場合はアプリケーション整合性のあるバックアップを実行できます。粒度の細かな復元には、ADのごみ箱を使用することをお勧めします。
+AD VMの復元は、権限のない復元を使用して実行されます。AD VMが復元され、ドメインに再び参加すると、ドメインと同期します。権限のある復元を実行するには、HYCUサポートに連絡してください。
+対応アプリケーションの最新リストについては、support.hycu.comで最新のHYCU compatibility matrix を確認してください。

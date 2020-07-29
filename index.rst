@@ -34,65 +34,65 @@
 .. _getting_started:
 
 ---------------
-Getting Started
+はじめに
 ---------------
 
-Welcome to the Hycu and Nutanix add-on lab! This workbook accompanies an instructor-led session that introduces Nutanix and Hycu software workong together.
+HycuおよびNutanixアドオンラボへようこそ！このワークブックには、講師主導のNutanixとHycuソフトウェアを組み合わた連携ソリューションのセッションが含まれています。
 
-You will explore using Hycu with Nutanix.
+この演習ではHycuとNutanixを使って学びます。
 
-What's New
+新機能
 ++++++++++
-- Workshop updated for the following software versions:
+- ワークショップはこちらのバージョンにアップグレードされています:
     - AOS & PC 5.11.2.x
 
-- Optional Lab Updates:
+- オプションラボの更新:
 
 
-Agenda
+アジェンダ
 ++++++
 
 - Hycu
 
-Introductions
+はじめに
 +++++++++++++
 
-- Name
-- Familiarity with Nutanix
+- 名前
+- Nutanixの知識
 
-Initial Setup
+初期設定
 +++++++++++++
 
-- Take note of the *Passwords* being used.
-- Log into your virtual desktops (connection info below)
+- 使用されている *Passwords* をメモします。
+- 仮想デスクトップにログインします。（接続情報はこちら）
 
-Environment Details
+環境の詳細情報
 +++++++++++++++++++
 
-Nutanix Workshops are intended to be run in the Nutanix Hosted POC environment. Your cluster will be provisioned with all necessary images, networks, and VMs required to complete the exercises.
+Nutanix Workshopsは、Nutanix Hosted POC環境で実行することを目的としています。演習を完了するために必要なすべてのイメージ、ネットワーク、VMがクラスターにプロビジョニングされます。
 
-Networking
+ネットワーク
 ..........
 
-Hosted POC clusters follow a standard naming convention:
+ホストされたPOCクラスターは、標準の命名規則に従います：
 
 - **Cluster Name** - POC\ *XYZ*
 - **Subnet** - 10.**21**.\ *XYZ*\ .0
 - **Cluster IP** - 10.**21**.\ *XYZ*\ .37
 
-If provisioned from the marketing pool:
+マーケティングプールからプロビジョニングされた場合：
 
 - **Cluster Name** - MKT\ *XYZ*
 - **Subnet** - 10.**20**.\ *XYZ*\ .0
 - **Cluster IP** - 10.**20**.\ *XYZ*\ .37
 
-For example:
+例：
 
 - **Cluster Name** - POC055
 - **Subnet** - 10.21.55.0
 - **Cluster IP** - 10.21.55.37
 
-Throughout the Workshop there are multiple instances where you will need to substitute *XYZ* with the correct octet for your subnet, for example:
+ワークショップ全体を通して、 *XYZ* をサブネットの正しいオクテットに置き換える必要があるインスタンスが複数あります。次に例を示します:
 
 .. list-table::
    :widths: 25 75
@@ -107,7 +107,7 @@ Throughout the Workshop there are multiple instances where you will need to subs
    * - 10.21.\ *XYZ*\ .40
      - **DC** VM IP, NTNXLAB.local Domain Controller
 
-Each cluster is configured with 2 VLANs which can be used for VMs:
+各クラスターは、VMで使用できる2つのVLANで構成されています:
 
 .. list-table::
   :widths: 25 25 10 40
@@ -126,12 +126,12 @@ Each cluster is configured with 2 VLANs which can be used for VMs:
     - *XYZ1*
     - 10.21.\ *XYZ*\ .132-10.21.\ *XYZ*\ .253
 
-Credentials
+資格情報
 ...........
 
 .. note::
 
-  The *<Cluster Password>* is unique to each cluster and will be provided by the leader of the Workshop.
+   *<Cluster Password>* はクラスタに固有であり、ワークショップのリーダーによって提供されます。
 
 .. list-table::
    :widths: 25 35 40
@@ -153,7 +153,7 @@ Credentials
      - nutanix
      - *<Cluster Password>*
 
-Each cluster has a dedicated domain controller VM, **DC**, responsible for providing AD services for the **NTNXLAB.local** domain. The domain is populated with the following Users and Groups:
+各クラスターには専用のドメインコントローラーVM、 **DC**があり、 **NTNXLAB.local**ドメインにADサービスを提供します。ドメインには次のユーザーとグループが作成されています:
 
 .. list-table::
    :widths: 25 35 40
@@ -184,68 +184,68 @@ Each cluster has a dedicated domain controller VM, **DC**, responsible for provi
      - user01-user25
      - nutanix/4u
 
-Access Instructions
+アクセス手順
 +++++++++++++++++++
 
-The Nutanix Hosted POC environment can be accessed a number of different ways:
+NutanixがホストするPOC環境にはさまざまな方法でアクセスできます：
 
-Lab Access User Credentials
+ラボアクセスのユーザー資格情報
 ...........................
 
-PHX Based Clusters:
+PHXベースのクラスター:
 **Username:** PHX-POCxxx-User01 (up to PHX-POCxxx-User20), **Password:** *<Provided by Instructor>*
 
-RTP Based Clusters:
+RTPベースのクラスター:
 **Username:** RTP-POCxxx-User01 (up to RTP-POCxxx-User20), **Password:** *<Provided by Instructor>*
 
-Frame VDI
+VDIフレーム
 .........
 
-Login to: https://frame.nutanix.com/x/labs
+ログイン先: https://frame.nutanix.com/x/labs
 
-**Nutanix Employees** - Use your **NUTANIXDC** credentials
-**Non-Employees** - Use **Lab Access User** Credentials
+**Nutanix社員** -  **NUTANIXDC** 資格情報を使用
+**社員以外** -  **Lab Access User** 資格情報を使用
 
 Parallels VDI
 .................
 
-PHX Based Clusters Login to: https://xld-uswest1.nutanix.com
+PHXベースのクラスター ログイン先: https://xld-uswest1.nutanix.com
 
-RTP Based Clusters Login to: https://xld-useast1.nutanix.com
+RTPベースのクラスター ログイン先: https://xld-useast1.nutanix.com
 
-**Nutanix Employees** - Use your **NUTANIXDC** credentials
-**Non-Employees** - Use **Lab Access User** Credentials
+**Nutanix社員** -  **NUTANIXDC** 資格情報を使用
+**社員以外** -  **Lab Access User** 資格情報を使用
 
-Employee Pulse Secure VPN
+社員用 Pulse Secure VPN
 ..........................
 
-Download the client:
+クライアントのダウンロード:
 
-PHX Based Clusters Login to: https://xld-uswest1.nutanix.com
+PHXベースのクラスター ログイン先: https://xld-uswest1.nutanix.com
 
-RTP Based Clusters Login to: https://xld-useast1.nutanix.com
+RTPベースのクラスター ログイン先: https://xld-useast1.nutanix.com
 
-**Nutanix Employees** - Use your **NUTANIXDC** credentials
-**Non-Employees** - Use **Lab Access User** Credentials
+**Nutanix社員** -  **NUTANIXDC** 資格情報を使用
+**社員以外** -  **Lab Access User** 資格情報を使用
 
-Install the client.
+クライアントのインストール
 
-In Pulse Secure Client, **Add** a connection:
+Pulse Secure Clientで、接続を **追加** :
 
-For PHX:
+PHXの場合:
 
-- **Type** - Policy Secure (UAC) or Connection Server
+- **Type** - Policy Secure (UAC) または Connection Server
 - **Name** - X-Labs - PHX
 - **Server URL** - xlv-uswest1.nutanix.com
 
-For RTP:
+RTPの場合:
 
-- **Type** - Policy Secure (UAC) or Connection Server
+- **Type** - Policy Secure (UAC) または Connection Server
 - **Name** - X-Labs - RTP
 - **Server URL** - xlv-useast1.nutanix.com
 
 
-Nutanix Version Info
+Nutanix バージョン情報
 ++++++++++++++++++++
 
 - **AHV Version** - AHV 20170830.337

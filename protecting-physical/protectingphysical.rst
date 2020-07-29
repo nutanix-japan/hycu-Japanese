@@ -1,118 +1,116 @@
 .. _protectingphysical:
 
 ----------------------------------------
-HYCU: Physical Windows Server Protection
+HYCU: 物理Windowsサーバーの保護
 ----------------------------------------
 
-*The estimated time to complete this lab is 60 minutes.*
+*この演習の推定所要時間は60分です。*
 
-Overview
+概要
 ++++++++
-HYCU 4.0 and later versions offers customers the option and ability to backup and protect physical Windows servers. Similar to application backup, HYCU will utilize patented technology allowing it to execute actions remotely, thus not requiring deployment or maintenance of any agents on the physical servers. Instead of agent based approach, HYCU performs VSS snapshot based full and incremental backups using custom change block tracking, allowing also for physical to virtual restoration.
+HYCU 4.0以降のバージョンでは、物理Windowsサーバーを保護する機能とオプションが提供されます。アプリケーションのバックアップと同様に、HYCUは特許取得済みのテクノロジーを利用してリモートでジョブを実行できるため、物理サーバー上へのエージェントの展開やメンテナンスは不要です。エージェントベースのアプローチの代わりに、HYCUはカスタムCBTを使用して、VSSスナップショットベースのフルおよび増分バックアップを実行し、物理から仮想への復元も可能にします。
 
-.. note:: Even though HYCU does not integrate with HyperV hypervisor, it will still be able to perform full and incremental backups of HyperV VMs by treating them as Physical machines.
+.. note:: Hyper-Vハイパーバイザーをサポートしていませんが、Hyper-V VMを物理マシンとして扱うことにより、Hyper-V VMのフルバックアップおよび増分バックアップを実行できます。
 
-To start the backup of physical server, it first needs to be added as a source within HYCU.
+物理サーバーのバックアップを開始するには、まずHYCUのSourceとして追加する必要があります。
 
-#. To access the Sources dialog box, click *Administration* (the gear icon) and then select *Sources*
+#. Sourcesダイアログボックスにアクセスするには、 *管理*（歯車のアイコン）をクリックし、 *Sources*を選択してください。
 
    .. figure:: images/1.png
 
-#. In the Sources dialog box, click New
+#. Sourcesダイアログボックスで、Newをクリックします。
 
    .. figure:: images/2.png
 
-   #. Enter a name for the physical Windows Server
-   #. Enter the hostname or IP of the physical Windows Server
-   #. Click *Save*
+   #. 物理Windowsサーバーの名前を入力します
+   #. 物理Windowsサーバーのホスト名またはIPを入力します
+   #.  *Save*をクリックします
 
    .. figure:: images/3.png
 
-   You may also use this same menu to edit any pre-existing physical Windows Servers by selecting Edit.
-   If you need to delete any physical Windows Server Sources, select *Delete*.
+   この同じメニューを使用して、Editを選択することにより、既存の物理Windowsサーバーを編集することもできます。物理WindowsサーバーをSourcesから削除する場合は、 *Delete*を選択します。
 
-   .. note:: Note: If you delete any physical Windows Servers from HYCU and re-add them later, HYCU will treat the newly created machine as a new source and, thus, no prior restore points will be available.  Therefore, exercise caution when deleting and re-adding these source servers.
+   .. note:: 注意点：HYCUから物理Windowsサーバーを削除し、後でそれらを再追加すると、HYCUは新しく作成されたマシンを新しいソースとして扱い、以前のリカバリポイントは使用できなくなります。したがって、これらのソースサーバーを削除して再度追加する場合は注意してください。
 
-#. Verify that you can now see the Physical Server listed under HYCU’s Virtual Machines menu
+#. Virtual Machinesメニューに物理サーバーが表示されていることを確認します。
 
    .. figure:: images/4.png
 
-#. Next, configure and assign credentials to the Physical server, allowing HYCU administrative access to the physical machine. Same as in Application lab, configure a set of credentials and assign them to the Physical server.
+#. 次に、資格情報を設定し、物理サーバーに割り当てることで、物理マシンへのHYCU管理アクセスを可能にします。アプリケーションの演習と同じように、資格情報のセットを設定し、物理サーバーに割り当てます。
 
-#. Click on *Credentials*, and add the Windows Local (or Domain) Admin credentials within HYCU by clicking +New and adding the Credentials (Name, Username, and Password)
+#. *Credentials*をクリックします。+ Newをクリックして資格情報（名前、ユーザー名、パスワード）を追加し、HYCUにWindowsローカル（またはドメイン）管理者資格情報を追加します。
 
    .. figure:: images/5.png
 
-#. Assign the newly created credentials to the physical Windows Server(s)
+#. 新しく作成した資格情報を物理Windowsサーバーに割り当てます。
 
    .. figure:: images/6.png
 
-#. To begin backing up physical Windows Servers, you will need to assign a backup policy that explicitly utilizes an SMB target, other targets are not supported at this time.  If required, data can be copied to the via Copy and Archive policy options.
+#. 物理Windowsサーバーのバックアップを開始するには、SMBターゲットを明示的に利用するバックアップポリシーを割り当てる必要があります。現時点では、他のターゲットはサポートされていません。必要に応じて、コピーおよびアーカイブポリシーオプションを使用してデータをコピーできます。
 
    .. figure:: images/7.png
 
-#. Verify the policy is using an SMB target
+#. ポリシーがSMBターゲットを使用していることを確認します。
 
    .. figure:: images/8.png
 
-   The advantage of using SMB type of target is that the backup data is getting copied directly from the physical server to the respective SMB target, *not* going through the HYCU VM.
-   Once policy is assigned, backup will get started and can be tracked via Jobs context. HYCU will perform a VSS based snapshot of all the disks and calculate non-zeroed/changed blocks to transfer to the target.
+   SMBタイプのターゲットを使用する利点は、バックアップデータがHYCU VMを経由せずに、物理サーバーからそれぞれのSMBターゲットに *直接*コピーされることです。
+   ポリシーが割り当てられると、バックアップが開始され、Jobsコンテキストを介して追跡できます。HYCUはすべてのディスクのVSSベースのスナップショットを実行し、ゼロ以外の変更ブロックを計算してターゲットに転送します。
 
    .. figure:: images/9.png
 
-#. If you need to troubleshoot, you may select the View Report Button (upper-right).
+#. トラブルシューティングが必要な場合は、View reportボタン（右上）をクリックします。
 
-   When it comes to restoring a backup, you can perform single file/folder recovery or very seamlessly clone the full physical machine into the virtual environment. This can help with migration scenarios or can be use just for test and dev purposes. It is a feature often requiring specialized products where as in HYCU it is an integral part and comes with basic license. Bare-metal recovery needs to be performed using manual procedure.
+   復元について、単一のファイル/フォルダの復元、または、物理マシン全体を仮想環境にシームレスに復元できます。これは移行シナリオに役立ち、テストや開発の目的で使用できます。これは、特殊な製品を必要とすることが多いのですが、HYCUでは基本ライセンスに付属している機能になります。ベアメタルリカバリは手動で実行する必要があります。
 
-   To clone the server into Nutanix AHV make sure you download and install the Nutanix VirtIO drivers before the backup. This can be done from `<https://support.nutanix.com>`_ (after logging in), under *Downloads* and Tools & Firmware.  Within *Tools & Firmware*, you will need to search for the Windows VirtIO drivers (this may require navigating to the third page of results, if you use the search capability.)
+   サーバーをNutanix AHVにクローンするには、バックアップの前にNutanix VirtIOドライバをダウンロードしてインストールしてください。 `<https://support.nutanix.com>`_（ログイン後）の *Downloads*下、Tools & Firmwareから実行できます。 *Tools & Firmware*内でWindows VirtIOドライバを検索する必要があります。（検索する場合、結果の3ページ目に移動する必要があります）。
 
    .. figure:: images/10.png
 
    .. figure:: images/11.png
 
-#. Within windows, ensure the Nutanix VirtIO drivers have been installed
+#. ウィンドウ内で、Nutanix VirtIOドライバがインストールされていることを確認します。
 
    .. figure:: images/12.png
 
-#. Once the full backup has completed successfully, begin the cloning process, by selecting the completed Full or incremental backup job and select *Restore VM*
+#. フルバックアップが正常に完了したら、完了したフルまたは増分バックアップジョブを選択し、 *Restore VM*をクリックし、クローン作成プロセスを開始します。
 
    .. figure:: images/13.png
 
-#. Select *Clone VM* and click *Next*
+#. *Clone VM*を選択し、 *Next*をクリックします。
 
    .. figure:: images/14.png
 
-#. Choose the cluster and a VM Storage Container on it
+#. クラスターとその上にあるVM Storage Containerを選択します。
 
    .. figure:: images/15.png
 
-#. Type in a *New VM Name* and select *Restore*
+#. *New VM Name*を入力し、 *Restore*を選択します。
 
    .. figure:: images/16.png
 
-#. Track the restore process in details through the Jobs view.
+#. Jobsビューを介して、リストアプロセスの詳細を確認します。
 
    .. figure:: images/17.png
 
-#. Once the VM clone (restore) is complete, you will notice a warning stating that you will need to assign a new network adapter.
+#. クローン（復元）が完了すると、新しいネットワークアダプターを割り当てる必要があることを示す警告が表示されます。
 
    .. figure:: images/18.png
 
-#. You will see this message in *View Report*
+#. このメッセージは *View Report*から確認できます。
 
    .. figure:: images/19.png
 
-#. Login to your Nutanix Prism Element UI and verify the existence of the new cloned VM.  Add a NIC, configure a VLAN, provide an appropriate IP address, and login to test it out.
+#. Prism Elementにログインし、新しいクローンVMを確認します。NICの追加、VLANの構成、適切なIPアドレスを提供し、ログインしてテストします。
 
-   More often than not in physical world, it is enough to recover just a single file or folder.
-   To achieve this HYCU will need a staging area on one of the Virtual environments. In the Virtual Machines menu, click on a physical Windows Server and select *Prepare for Restore Files* to create a snapshot to use for a File-Level Restore. This may take little while for HYCU to rehydrate the data and establish a snapshot that can be used for a restore. Once done, *SNAP* tag will be visible on that restore point and simply click on the Restore Files.
+   多くの場合、単一のファイルやフォルダを復元するだけで要件を満たします。
 
    .. figure:: images/20.png
 
-#. Navigate to the files you wish to restore and click Next
+#. 復元するファイルに移動し、Nextをクリックします。
 
    .. figure:: images/21.png
 
-#. Choose where you want to restore your files, click Next, and complete the rest of the process intuitively, according to your selection.
+#. ファイルを復元する場所を選択し、Nextをクリックして、残りの手順を完了します。
 
    .. figure:: images/22.png
