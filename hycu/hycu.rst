@@ -34,44 +34,44 @@ HYCUは、Nutanixのセカンダリストレージ製品であるNutanix Mineと
 HYCUアプライアンスの構成
 ++++++++++++++++++++++++++
 
-#. **Prism > VM > Table**から **+ Create VM**をクリックします。
+#. **Prism > VM > Table** から **+ Create VM** をクリックします。
 
-#. フィールドに値を入力し、 **Save**をクリックします：
+#. フィールドに値を入力し、 **Save** をクリックします：
 
    - **Name** - *Initials*\ **-HYCU**
    - **vCPU(s)** - 4
    - **Number of Cores per vCPU** - 1
    - **Memory** - 4 GiB
-   - **+ Add New Disk**を選択
+   - **+ Add New Disk** を選択
 
      - **Operation** - Clone from Image Service
      - **Image** - hycu-\*.qcow2
-     - **Add**を選択
-   - **+ Add New Disk**を選択
+     - **Add** を選択
+   - **+ Add New Disk** を選択
 
      - **Operation** - Allocate on Storage Container
      - **Storage Container** - Default
      - **Size (GiB)** - 32
-     - **Add**を選択
+     - **Add** を選択
    - **CD-ROM** Diskを削除
-   - **Add New NIC**を選択
+   - **Add New NIC** を選択
 
      - **VLAN Name** - Secondary
-     - **Add**を選択
+     - **Add** を選択
 
-#. *Initials*\ **-HYCU** VMを選択し、 **Power on**をクリックします。
+#. *Initials*\ **-HYCU** VMを選択し、 **Power on** をクリックします。
 
-   保護対象VMの数に応じてバックアップアプライアンスのCPUおよびメモリリソースを増やします。サイジングの詳細については`HYCU User Guide <https://support.hycu.com/hc/en-us/sections/115001018365-Product-documentation>`_を参照してください。
+   保護対象VMの数に応じてバックアップアプライアンスのCPUおよびメモリリソースを増やします。サイジングの詳細については `HYCUUserGuide <https://support.hycu.com/hc/en-us/sections/115001018365-Product-documentation>`_ を参照してください。
 
    アプライアンスに追加されたセカンダリディスクは、ローカルHYCUデータベースおよびメンテナンス用のデータディスクとして使用されます。 VMバックアップのデータは保存しません。
 
-#. **Launch Console**をクリックします。
+#. **Launch Console** をクリックします。
 
-#. **1 HYCU Backup Controller**を選択します。
+#. **1 HYCU Backup Controller** を選択します。
 
 .. figure:: images/0.png
 
-#. 以下のフィールドを値を入力し、 **OK**をハイライトして **Enter**キーをクリックします：
+#. 以下のフィールドを値を入力し、 **OK** をハイライトして **Enter** キーをクリックします：
 
    - **Hostname** - *Initials*\ **-HYCU**
    - **IPv4 address** - *Specify the IP Assigned by IPAM DHCP*
@@ -86,7 +86,7 @@ HYCUアプライアンスの構成
 
    内部データベースが初期化され、バックアップ・コントローラーのサービスが開始されるまで、約1分待ちます。
 
-#. デフォルトの資格情報をメモします。 **Enter**キーをクリックして **HYCU** VMコンソールを閉じます。
+#. デフォルトの資格情報をメモします。 **Enter** キーをクリックして **HYCU** VMコンソールを閉じます。
 
    .. figure:: images/2.png
 
@@ -102,25 +102,25 @@ HYCU仮想アプライアンスが展開されているクラスターがNutanix
    - **Username** - admin
    - **Password** - admin
 
-#. ツールバーから、:fa:`cog` **> Sources**をクリックします。
+#. ツールバーから、:fa:`cog` **> Sources** をクリックします。
 
    .. figure:: images/3.png
 
-#. **+ New**をクリックし、 以下のフィールドに値を入力します：
+#. **+ New** をクリックし、 以下のフィールドに値を入力します：
 
    - **URL** - *Prism ElementのURL* (例：https://10.XX.YY.37:9440)
    - **User** - admin
    - **Password** - *Prism Element Password*
 
-#. **Next**をクリックします。
+#. **Next** をクリックします。
 
-#. HYCUがNutanixクラスターを検証します。 **Save**をクリックします。
+#. HYCUがNutanixクラスターを検証します。 **Save** をクリックします。
 
    .. figure:: images/4.png
 
-#. ジョブの開始後、 **Close**をクリックします。
+#. ジョブの開始後、 **Close** をクリックします。
 
-   すべてのジョブは非同期で実行され、 **Jobs**ページで確認できます。
+   すべてのジョブは非同期で実行され、 **Jobs** ページで確認できます。
 
    .. figure:: images/5.png
 
@@ -132,7 +132,7 @@ HYCU仮想アプライアンスが展開されているクラスターがNutanix
 
      .. figure:: images/7.png
 
-#. **HYCU**サイドバーから、:fa:`bars` **> Virtual Machines**をクリックし、クラスターのVMがリスト表示されていることを確認します。
+#. **HYCU** サイドバーから、:fa:`bars` **> Virtual Machines** をクリックし、クラスターのVMがリスト表示されていることを確認します。
 
 Backup Target（保存場所）の追加
 ++++++++++++++++++++++
@@ -162,9 +162,9 @@ HYCUを使用すると、Nutanixクラスター（Mineかどうかに関係な�
 
    .. figure:: images/8.png
 
-#. **HYCU**サイドバーから、:fa:`bars` **> Targets**をクリックします。
+#. **HYCU** サイドバーから、:fa:`bars` **> Targets** をクリックします。
 
-#. **+ New**をクリックします。以下のフィールドに値を入力し、最後に **Save**をクリックします。
+#. **+ New** をクリックします。以下のフィールドに値を入力し、最後に **Save** をクリックします。
 
    - **Name** - Nutanix_VG
    - **Concurrent Backups** - 4
@@ -258,7 +258,7 @@ HYCU内でNutanix Objectsを設定
 
 #. ターゲットの名前をNTNX_Objectsにします。
 
-#. **Use for Archiving**オプションを有効にします。
+#. **Use for Archiving** オプションを有効にします。
 
 #. Typeで"AWS S3/Compatible"を選択します。
 
@@ -280,7 +280,7 @@ Backupポリシーの構成
 
 HYCUはポリシーを使用してRPO、RTO、保持期間、およびバックアップのターゲットを定義します。そして、これらのSLAをVMのグループに簡単に適用できます。
 
-#. **HYCU**サイドバーから、:fa:`bars` **> Policies**をクリックします。
+#. **HYCU** サイドバーから、:fa:`bars` **> Policies** をクリックします。
 
    既定で4つのポリシーが構成されています:
 
@@ -289,9 +289,9 @@ HYCUはポリシーを使用してRPO、RTO、保持期間、およびバック�
    - **Bronze** - RPO24時間、RTO24時間
    - Exclude - バックアップから除外
 
-#. カスタムポリシーを作成するには、 **+ New**をクリックします。
+#. カスタムポリシーを作成するには、 **+ New** をクリックします。
 
-#. 以下のフィールドに値を入力し、 **Save**をクリックします:
+#. 以下のフィールドに値を入力し、 **Save** をクリックします:
 
    - **Name** - Platinum
    - **Description** - 2 Hour RPO/RTO, Fast Restore Enabled (1 Week)
@@ -313,7 +313,7 @@ HYCUはポリシーを使用してRPO、RTO、保持期間、およびバック�
    - **Fast Restore** - Nutanixクラスターのローカルスナップショットを保持し、復元時に利用することで、迅速な復元を実現します。
    - **Backup from Replica** - プライマリクラスターからセカンダリクラスターへのネイティブNutanixレプリケーションを使用するVMの場合、この機能は、セカンダリクラスター上のレプリカスナップショットからVMをバックアップします。 この機能により、リモートオフィスやブランチオフィスなどのシナリオにおいて転送データ量を大幅に削減できます。 また、リモートサイトにエージェントやプロキシを展開する必要もなくなります。
 
-   HYCUは、管理者がRTOを定義する機能も特徴的です。 **Recover Within**を指定してターゲットで **Automatic**を選択すると、HYCUはバックアップを転送する適切なターゲットを計算します。 ターゲットのパフォーマンスは常に監視され、構成されたウィンドウ内でデータを復元できることが保証されます。 HYCUインスタンスに複数のターゲットが設定されている場合、サブセットを選択でき、HYCUは選択されたターゲットから適切に選択します。
+   HYCUは、管理者がRTOを定義する機能も特徴的です。 **Recover Within** を指定してターゲットで **Automatic** を選択すると、HYCUはバックアップを転送する適切なターゲットを計算します。 ターゲットのパフォーマンスは常に監視され、構成されたウィンドウ内でデータを復元できることが保証されます。 HYCUインスタンスに複数のターゲットが設定されている場合、サブセットを選択でき、HYCUは選択されたターゲットから適切に選択します。
 
 #. Nutanix Objectsへのアーカイブを構成するには、右上のメニューから"Archiving"をクリックして、アーカイブプロンプトを開きます。次に+Newをクリックします。
 
@@ -332,7 +332,7 @@ HYCUはポリシーを使用してRPO、RTO、保持期間、およびバック�
 
 #. Saveをクリックします。
 
-#. **Exclude**ポリシーを選択し、  **Set Default > Yes**をクリックします。
+#. **Exclude** ポリシーを選択し、  **Set Default > Yes** をクリックします。
 
    .. figure:: images/12.png
 
@@ -345,50 +345,50 @@ HYCUはポリシーを使用してRPO、RTO、保持期間、およびバック�
 
 Windows VMを作成し、Nutanix Prismを介してVMにNutanix Volume Groupを追加します。これは、VM iSCSIイニシエーターを使用して行うこともできます。
 
-#. **Prism > VM > Table**に進み、 **+ Create VM**をクリックします。
+#. **Prism > VM > Table** に進み、 **+ Create VM** をクリックします。
 
-#. 以下のフィールドに値を入力し、 **Save**をクリックします:
+#. 以下のフィールドに値を入力し、 **Save** をクリックします:
 
    - **Name** - *Initials*\ -HYCUBackupTest
    - **vCPU(s)** - 2
    - **Number of Cores per vCPU** - 1
    - **Memory** - 4 GiB
-   - **+ Add New Disk**を選択
+   - **+ Add New Disk** を選択
 
      - **Operation** - Clone from Image Service
      - **Image** - Windows2012R2.qcow2
-     - **Add**を選択
-   - **Add New NIC**を選択
+     - **Add** を選択
+   - **Add New NIC** を選択
 
      - **VLAN Name** - Secondary
-     - **Add**を選択
+     - **Add** を選択
 
-#. *Initials*\ **-HYCUBackupTest**を選択し、 **Power on**をクリックします。
+#. *Initials*\ **-HYCUBackupTest** を選択し、 **Power on** をクリックします。
 
-#. VM起動後、 **Launch Console**をクリックします。
+#. VM起動後、 **Launch Console** をクリックします。
 
 #. Sysprepプロセスを完了し、ローカル管理者アカウントのパスワードを入力します。 (例：nutanix/4u)
 
-#. **Prism > Storage > Table > Volume Groups**から、 **+ Volume Group**を選択します。
+#. **Prism > Storage > Table > Volume Groups** から、 **+ Volume Group** を選択します。
 
 #. 以下のフィールドに値を入力します:
 
    - **Name** - *Initials*\ -BackupTestVG
    - **iSCSI Target Name Prefix** - *Initials*\ -HYCU-Target
    - **Description** - VG attached to HYCUBackupTest VM
-   - **+ Add New Disk**を選択
+   - **+ Add New Disk** を選択
 
      - **Storage Container** - Default
      - **Size (GiB)** - 10
-   - **Enable external client access**を選択
-   - **+ Attach to a VM**を選択
+   - **Enable external client access** を選択
+   - **+ Attach to a VM** を選択
 
      - **Available VMs** - *Initials*\ -HYCUBackupTest の前に作成されたVMを選択
-     - **Attach**を選択
+     - **Attach** を選択
 
-#. **Save**をクリックします。
+#. **Save** をクリックします。
 
-#. *Initials*\ **-HYCUBackupTest**コンソールまたはRDPセッションに戻ります。
+#. *Initials*\ **-HYCUBackupTest** コンソールまたはRDPセッションに戻ります。
 
 #. PowerShellを開いて次のコマンドを実行し、ディスクを有効にしてフォーマットします：
 
@@ -401,12 +401,12 @@ Windows VMを作成し、Nutanix Prismを介してVMにNutanix Volume Groupを�
 
    .. figure:: images/13.png
 
-#. **HYCU**サイドバーから、 :fa:`bars` **> Virtual Machines**を選択します。
+#. **HYCU** サイドバーから、 :fa:`bars` **> Virtual Machines** を選択します。
 
    VMにポリシーを割り当てる前に、HYCUがゲストOSへの認証に使用する資格情報を作成し保存します。これは、ファイルとアプリケーションに対応したバックアップを実行し、iSCSIディスクを検出できるようにします。
    Prismを介してVMに接続されたVolume Groupは、Nutanix APIを介して自動的に検出され、認証情報を割り当てなくても保護されます。 ゲスト内のiSCSIイニシエーターを介してVMを接続する場合、検出プロセスは接続されたVolume Groupも検出します。
 
-#. 上部ツールバーから、 **(鍵アイコン) Credentials > + New**をクリックします。
+#. 上部ツールバーから、 **(鍵アイコン) Credentials > + New** をクリックします。
 
 #. 以下のフィールドに値を入力します:
 
@@ -414,15 +414,15 @@ Windows VMを作成し、Nutanix Prismを介してVMにNutanix Volume Groupを�
    - **Username** - Administrator
    - **Password** - *HYCUBackupTest VM作成時に入力したパスワード*
 
-#. **Save**をクリックします。
+#. **Save** をクリックします。
 
-#. *Initials*\ **-HYCUBackupTest** VMを選択し、 **(鍵アイコン) Credentials**をクリックします。 **Local Windows Admin** 資格情報を選択し、 **Assign**をクリックすることでVMに割り当てます。
+#. *Initials*\ **-HYCUBackupTest** VMを選択し、 **(鍵アイコン) Credentials** をクリックします。 **Local Windows Admin** 資格情報を選択し、 **Assign** をクリックすることでVMに割り当てます。
 
    .. note::
 
-     HYCUは定期的に自動同期を行います。仮想マシンのリストに *Initials*\ **-HYCUBackupTest**が表示されない場合は、 **Synchronize**をクリックして、更新されたリストをPrismから取得します。
+     HYCUは定期的に自動同期を行います。仮想マシンのリストに *Initials*\ **-HYCUBackupTest** が表示されない場合は、 **Synchronize** をクリックして、更新されたリストをPrismから取得します。
 
-   HYCUは、資格情報がVMへの認証に使用できることを検証します。しばらくすると、 **Discovery**列に、検出が成功したことを示す緑色のチェックが表示されます。
+   HYCUは、資格情報がVMへの認証に使用できることを検証します。しばらくすると、 **Discovery** 列に、検出が成功したことを示す緑色のチェックが表示されます。
 
    .. figure:: images/16.png
 
@@ -432,19 +432,19 @@ Windows VMを作成し、Nutanix Prismを介してVMにNutanix Volume Groupを�
 
      .. figure:: images/19.png
 
-#. *Initials*\ **-HYCUBackupTest** VMを選択し、 **(盾アイコン) Policies**をクリックします。
+#. *Initials*\ **-HYCUBackupTest** VMを選択し、 **(盾アイコン) Policies** をクリックします。
 
-#. カスタムの **Fast**ポリシーを選択し、 **Assign**をクリックします。
+#. カスタムの **Fast** ポリシーを選択し、 **Assign** をクリックします。
 
-#. **HYCU**サイドバーから、:fa:`bars` **> Jobs**をクリックし、バックアップの進捗を確認します。
+#. **HYCU** サイドバーから、:fa:`bars` **> Jobs** をクリックし、バックアップの進捗を確認します。
 
    HYCUがNutanix Change Block Tracking APIを利用してOSディスクだけでなく、iSCSIを介してマウントされたVolume Groupもバックアップされていることを、バックアップジョブの詳細から確認できます。さらに、Volume GroupをAHVのVMに（ゲスト内のiSCSIイニシエーターを使用せずに）直接接続する場合、HYCUはゲスト内の検出資格情報を必要とせずにVolume Groupをバックアップおよび復元できます。
 
    .. figure:: images/17.png
 
-#. 最初のフルバックアップが完了したら、サイドバーから **Dashboard**を選択し、すべてのポリシーが準拠していること、VMが100%保護されていることを確認します。
+#. 最初のフルバックアップが完了したら、サイドバーから **Dashboard** を選択し、すべてのポリシーが準拠していること、VMが100%保護されていることを確認します。
 
-#. **Virtual Machines**に戻り、 *Initials*\ **-HYCUBackupTest** VMを選択します。 **Backup**をクリックし、手動で増分バックアップを実行します。
+#. **Virtual Machines** に戻り、 *Initials*\ **-HYCUBackupTest** VMを選択します。 **Backup** をクリックし、手動で増分バックアップを実行します。
 
    .. figure:: images/18.png
 
@@ -467,25 +467,25 @@ Windows VMを作成し、Nutanix Prismを介してVMにNutanix Volume Groupを�
 バックアップからの復元
 +++++++++++++++++
 
-#. **HYCU**サイドバーから、:fa:`bars` **> Virtual Machines >**に進み、 *Initials*\ **-HYCUBackupTest**をクリックします。
+#. **HYCU** サイドバーから、:fa:`bars` **> Virtual Machines >** に進み、 *Initials*\ **-HYCUBackupTest** をクリックします。
 
-#. 下の **Details**テーブルから、 **Compliancy**列と **Backup Status**列のアイコンにカーソルを合わせると、サイズ、バックアップを実行する時間、バックアップのタイプなど、各リストアポイントに関する追加情報が表示されます。
+#. 下の **Details** テーブルから、 **Compliancy** 列と **Backup Status** 列のアイコンにカーソルを合わせると、サイズ、バックアップを実行する時間、バックアップのタイプなど、各リストアポイントに関する追加情報が表示されます。
 
    .. figure:: images/21.png
 
-#. 最新の増分リストアポイントを選択し、 **Restore VM**をクリックします。
+#. 最新の増分リストアポイントを選択し、 **Restore VM** をクリックします。
 
    HYCUは、VM全体を上書きまたはクローンする機能と、個々のVMディスクまたはVolume Groupを個別に復元またはクローンする機能を提供します。Volume Groupの復元は、ディスクを既存のVMにマウントしたい場合に役立ちます。
 
    さらに、任意のリストアポイントのローカルディスクとVolume Groupの両方をNFSまたはSMB共有にエクスポートできます。
 
-#. **Clone VM**を選択し、 **Next**をクリックします。
+#. **Clone VM** を選択し、 **Next** をクリックします。
 
    .. figure:: images/20.png
 
    .. note:: HYCUはVMのクローンを作成しますが、VMにはVolume Groupが接続されているため、警告が表示されます。 この警告は安全に無視できます。
 
-#. 以下のフィールドに値を入力し、 **Restore**をクリックします:
+#. 以下のフィールドに値を入力し、 **Restore** をクリックします:
 
    - **Select a Storage Container** - Original location
    - **New VM Name** - *Initials*\ -HYCUBackupTest-Clone
@@ -498,7 +498,7 @@ Windows VMを作成し、Nutanix Prismを介してVMにNutanix Volume Groupを�
 
      インスタンスの復元でAutomaticを選択すると、デフォルトで最速のオプションが選択されます。 このポリシーでは、 **NutanixVG** Volume Groupに保存されたバックアップとは対照的に、ローカルのNutanixスナップショットになります。 手動でインスタンスを選択すると、バックアップまたはアーカイブターゲットからRTOをテストするのに役立ちます。
 
-#. **Prism > VM > Table**から、元の *Initials*\ **-HYCUBackupTest** VMをPower offし、 **その後** *Initials*\ **-HYCUBackupTest-Clone**をPower onします。
+#. **Prism > VM > Table** から、元の *Initials*\ **-HYCUBackupTest** VMをPower offし、 **その後** *Initials*\ **-HYCUBackupTest-Clone** をPower onします。
 
    .. note::
 
@@ -508,15 +508,15 @@ Windows VMを作成し、Nutanix Prismを介してVMにNutanix Volume Groupを�
 
    *おめでとうございます！ HYCUを使用して、最初のVMとVolume Groupを復元しました。*
 
-#. **Prism > VM > Table**から、 *Initials*\ **-HYCUBackupTest-Clone** VMとクローンの *Initials*\ **-BackupTestVG-**\ *Timestamp* Volume Groupを削除します。
+#. **Prism > VM > Table** から、 *Initials*\ **-HYCUBackupTest-Clone** VMとクローンの *Initials*\ **-BackupTestVG-**\ *Timestamp* Volume Groupを削除します。
 
    .. note::
 
-      アタッチされていることでVolume Groupの削除が失敗する場合、Volume Groupを **Update**し、Client下の *Initials*\ **-HYCUBackupTest-Clone** VM IQNの選択を解除します。 **Save**クリックして、再度Volume Groupを削除します。
+      アタッチされていることでVolume Groupの削除が失敗する場合、Volume Groupを **Update** し、Client下の *Initials*\ **-HYCUBackupTest-Clone** VM IQNの選択を解除します。 **Save** クリックして、再度Volume Groupを削除します。
 
 #. 元の *Initials*\ **-HYCUBackupTest** VMをPower onします。
 
-#. **HYCU**サイドバーから、:fa:`bars` **> Jobs**をクリックします。VMの復元には時間が掛かることがあります。
+#. **HYCU** サイドバーから、:fa:`bars` **> Jobs** をクリックします。VMの復元には時間が掛かることがあります。
 
    バックアップポリシーは、Nutanixクラスターのローカルスナップショットを保持するように設定されているため、復元作業ははほぼ瞬時に行われます。
 
@@ -525,25 +525,25 @@ VMファイルの復元
 
 VMまたはディスク全体を復元するだけでなく、HYCUを使用して、バックアップされたVMまたはVolume Groupからファイルを直接復元することもできます。 多くの場合、VMを復元する必要性は、不注意で削除または破損したファイルを取得することのみを目的としています。ファイルを直接復元する機能は、同じ最終結果を達成するために必要な時間とリソースを削減します。
 
-#. **HYCU**サイドバーから、:fa:`bars` **> Virtual Machines >**を選択し、 *Initials*\ **-HYCUBackupTest**をクリックします。
+#. **HYCU** サイドバーから、:fa:`bars` **> Virtual Machines >** を選択し、 *Initials*\ **-HYCUBackupTest** をクリックします。
 
-#. 最新の増分スナップショットを選択し、 **Restore Files**をクリックします。
+#. 最新の増分スナップショットを選択し、 **Restore Files** をクリックします。
 
    これにより、バックアップがマウントされ、ユーザーがローカルファイルシステムを参照できるようになります。
 
-#. 以前にボリュームグループ（E :)に作成した1つ以上のファイルを選択し、 **Next**をクリックします。
+#. 以前にボリュームグループ（E :)に作成した1つ以上のファイルを選択し、 **Next** をクリックします。
 
    .. figure:: images/22.png
 
-#. **Restore to Virtual Machine**を選択し、 **Next**をクリックします。
+#. **Restore to Virtual Machine** を選択し、 **Next** をクリックします。
 
-#. 以下のフィールドに値を入力し、 **Restore**をクリックします:
+#. 以下のフィールドに値を入力し、 **Restore** をクリックします:
 
    - **Path** - Original location
    - **Mode** - Rename restored
    - **Restore ACL** (デフォルトのまま)
 
-#. *Initials*\ **-HYCUBackupTest**コンソールを開き、ファイルが復元されていることを確認します。
+#. *Initials*\ **-HYCUBackupTest** コンソールを開き、ファイルが復元されていることを確認します。
 
    .. figure:: images/23.png
 
@@ -570,17 +570,17 @@ SMB共有をターゲットとして追加
 
 Filesのバックアップターゲットには、NFSエクスポート、SMB共有、またはS3（クラウド）ターゲットが必要です。つまり、Nutanix Bucketsも使用できます。 バックアップ対象のファイルをブロックストレージに直接書き込むことができないため、iSCSIターゲットは現在サポートされていません。
 
-#. **Prism > File Server**から、 **+ Share/Export**をクリックします。
+#. **Prism > File Server** から、 **+ Share/Export** をクリックします。
 
-#. 以下のフィールドに値を入力し、 **Next > Next > Create**をクリックします:
+#. 以下のフィールドに値を入力し、 **Next > Next > Create** をクリックします:
 
    - **Name** - *Initials*\ -HYCUTarget
    - **File Server** - *Initials*\ -Files
    - **Select Protocol** - SMB
 
-#. **HYCU**サイドバーから、 :fa:`bars` **> Targets**をクリックします。
+#. **HYCU** サイドバーから、 :fa:`bars` **> Targets** をクリックします。
 
-#. **+ New**をクリックし、以下のフィールドに値を入力し、 **Save**をクリックします:
+#. **+ New** をクリックし、以下のフィールドに値を入力し、 **Save** をクリックします:
 
    - **Name** - Files-HYCUTarget
    - **Concurrent Backups** - 1
@@ -599,13 +599,13 @@ APIアクセスの設定
 
 HYCUがNutanix Files REST APIsおよびCFTにアクセスするためには資格情報が必要です。
 
-#. **Prism > File Server**から、 *Initials*\ **-Files**サーバーを選択し、 **Manage roles**をクリックします。
+#. **Prism > File Server** から、 *Initials*\ **-Files** サーバーを選択し、 **Manage roles** をクリックします。
 
    .. figure:: images/25.png
 
-#. **REST API Access Users**の下で、 **+ New user**をクリックします。
+#. **REST API Access Users** の下で、 **+ New user** をクリックします。
 
-#. 以下のフィールドに値を入力し、 **Save > Close**をクリックします:
+#. 以下のフィールドに値を入力し、 **Save > Close** をクリックします:
 
    - **Username** - *Initials*\ -hycu
    - **Password** - nutanix/4u
@@ -619,13 +619,13 @@ Filesの保護は、ハイパーバイザーをHYCUに追加することと似�
 
 DHCPが有効になっているAHVクラスターの場合、Filesソースを追加すると、追加のHYCU Instanceを自動的に展開できます。 ESXiまたはDHCPが無効の環境では、HYCU Instanceを手動で展開する必要があります。（HYCU Backup Controllerの展開と同様）。手動による展開の詳細については`HYCU User Guide <https://support.hycu.com/hc/en-us/sections/115001018365-Product-documentation>`_を参照してください。
 
-#. **HYCU**ツールバーから、:fa:`cog` **> Sources**をクリックします。
+#. **HYCU** ツールバーから、:fa:`cog` **> Sources** をクリックします。
 
-#. 上部メニューから **Nutanix Files**をクリックします。
+#. 上部メニューから **Nutanix Files** をクリックします。
 
    .. figure:: images/26a.png
 
-#. **+ New**をクリックし、以下のフィールドに値を入力します:
+#. **+ New** をクリックし、以下のフィールドに値を入力します:
 
    - **URL** - https://bootcampfs.ntnxlab.local:9440
    - **Nutanix Files Server Credentials > Username** - *Initials*\ -hycu
@@ -633,17 +633,17 @@ DHCPが有効になっているAHVクラスターの場合、Filesソースを�
    - **Backup Credentials > Username** - NTNXLAB\\Administrator
    - **Backup Credentials > Password** - nutanix/4u
 
-   **Nutanix Files Server Credentials**は先の演習で構成したREST API資格情報になります。HYCUはAPIを使用して、前回のバックアップ以降に更新されたファイルを把握します。 **Backup Credentials**は、HYCUが共有フォルダにアクセスしてファイルコピーをするためのものです。このユーザーには、HYCUによってバックアップされるすべての共有フォルダへの読み取りアクセス権が必要です。
+   **Nutanix Files Server Credentials** は先の演習で構成したREST API資格情報になります。HYCUはAPIを使用して、前回のバックアップ以降に更新されたファイルを把握します。 **Backup Credentials** は、HYCUが共有フォルダにアクセスしてファイルコピーをするためのものです。このユーザーには、HYCUによってバックアップされるすべての共有フォルダへの読み取りアクセス権が必要です。
 
    .. figure:: images/27.png
 
    .. note::
 
-     ファイルのコピーのために共有フォルダにアクセスする必要があるため、HYCUが **Secondary**ネットワークに展開されています。:ref:`files` の演習では、 **Primary**ネットワークがストレージネットワークとして選択されました。つまり、 **Primary**ネットワーク上の他のVMは共有にアクセスできません。
+     ファイルのコピーのために共有フォルダにアクセスする必要があるため、HYCUが **Secondary** ネットワークに展開されています。:ref:`files` の演習では、 **Primary** ネットワークがストレージネットワークとして選択されました。つまり、 **Primary** ネットワーク上の他のVMは共有にアクセスできません。
 
-#. **Save**をクリックしてFilesソースを追加し、HYCU instanceの展開を開始します。
+#. **Save** をクリックしてFilesソースを追加し、HYCU instanceの展開を開始します。
 
-   Prismから *Initials*\ **-HYCU-1** VMの作成を確認し、HYCU **Jobs**ページで全体的なステータスを監視できます。 このプロセスは完了するまでに約3分かかります。
+   Prismから *Initials*\ **-HYCU-1** VMの作成を確認し、HYCU **Jobs** ページで全体的なステータスを監視できます。 このプロセスは完了するまでに約3分かかります。
 
    .. figure:: images/28.png
 
@@ -652,19 +652,19 @@ Filesのバックアップと復元
 
 Filesのバックアップと復元は、VM / VGワークフローと非常に似た動作をします。同じカスタマイズ可能なポリシーやOwner（所有者）/セルフサービス構造を使用します。
 
-#. 作成したSMBターゲット *Initials*\-HYCUTargetをカスタム **Fast**ポリシーに追加します。
+#. 作成したSMBターゲット *Initials*\-HYCUTargetをカスタム **Fast** ポリシーに追加します。
 
-#. **HYCU**サイドバーから、:fa:`bars` **> Shares**をクリックします。
+#. **HYCU** サイドバーから、:fa:`bars` **> Shares** をクリックします。
 
-#. **Marketing**共有を選択し、 **(盾アイコン) Policies**をクリックします。
+#. **Marketing** 共有を選択し、 **(盾アイコン) Policies** をクリックします。
 
    .. note::
 
      Prismに戻り、"Marketing"という名前のSMB共有を作成する必要がある場合があります。Filesで他の共有フォルダを作成した場合は、それらのいずれかを選択することもできます。
 
-#. カスタム **Fast**ポリシーを選択し、 **Assign**をクリックします。
+#. カスタム **Fast** ポリシーを選択し、 **Assign** をクリックします。
 
-#. **Jobs**に戻り、初期バックアップが正常に完了したことを確認します。
+#. **Jobs** に戻り、初期バックアップが正常に完了したことを確認します。
 
 #. Windows Tools VMまたは *Initials*\ **-HYCUBackupTest** VMを使用し、Marketing共有フォルダ（例：``\\<Initials>-Files\Marketing``）にアクセスし、以下を実行します:
 
@@ -672,27 +672,27 @@ Filesのバックアップと復元は、VM / VGワークフローと非常に�
    - 新しいファイルの追加
    - 既存ファイルの削除
 
-#. **HYCU**サイドバーから、:fa:`bars` **> Shares**をクリックします。
+#. **HYCU** サイドバーから、:fa:`bars` **> Shares** をクリックします。
 
-#. **Marketing**フォルダを選択し、 **Backup**から増分バックアップを実行します。
+#. **Marketing** フォルダを選択し、 **Backup** から増分バックアップを実行します。
 
    追加ファイルのサイズ次第ですが、増分バックアップは1分以内に完了するはずです。
 
-#. **Restore Points**下で最新のリストアポイントを選択し、 **Backup Status**にカーソルを合わせると、前回のバックアップ以降に変更されたファイルの数と、バックアップの増分サイズの両方を確認できます。
+#. **Restore Points** 下で最新のリストアポイントを選択し、 **Backup Status** にカーソルを合わせると、前回のバックアップ以降に変更されたファイルの数と、バックアップの増分サイズの両方を確認できます。
 
    .. figure:: images/29.png
 
    これらの値は、Marketing共有フォルダに追加/変更されたファイルを正確に反映していますか？
 
-   上の画面のターゲットは **Files-HYCUTarget**であることに注意してください。これは、バックアップポリシーを編集せずにどのように決定されましたか？
+   上の画面のターゲットは **Files-HYCUTarget** であることに注意してください。これは、バックアップポリシーを編集せずにどのように決定されましたか？
 
-#. 元のフルバックアップのリストアポイントを選択し、 **Browse & Restore Files**をクリックします。
+#. 元のフルバックアップのリストアポイントを選択し、 **Browse & Restore Files** をクリックします。
 
    .. figure:: images/30.png
 
-#. 以前にMarketing共有フォルダから削除したファイルを選択し、 **Next**をクリックします。
+#. 以前にMarketing共有フォルダから削除したファイルを選択し、 **Next** をクリックします。
 
-#. 元の場所をターゲットにして、 **Restore**をクリックします。
+#. 元の場所をターゲットにして、 **Restore** をクリックします。
 
 #. クライアントVMのコンソールに戻り、Marketing共有フォルダを更新して、以前に削除したファイルを表示します。
 
@@ -701,9 +701,9 @@ Filesのバックアップと復元は、VM / VGワークフローと非常に�
    数回のクリックで、管理者またはエンドユーザーは、HYCUおよびCFT APIを使用して、個々のファイル、フォルダ、またはNutanix Files共有全体を簡単に復元できます。
 
 重要なポイント
-+++++++++
++++++++++++++
 
-**HYCU**について知っておくべき重要なことは何ですか？
+**HYCU** について知っておくべき重要なことは何ですか？
 
 - HYCUは、AHVおよびESXiのVM、VG、およびアプリケーションに対する完全なバックアップ機能を提供します。
 
