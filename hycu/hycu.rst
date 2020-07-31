@@ -61,7 +61,7 @@ HYCUアプライアンスの構成
 
 #. *Initials*\ **-HYCU** VMを選択し、 **Power on** をクリックします。
 
-   保護対象VMの数に応じてバックアップアプライアンスのCPUおよびメモリリソースを増やします。サイジングの詳細については `HYCUUserGuide <https://support.hycu.com/hc/en-us/sections/115001018365-Product-documentation>`_ を参照してください。
+   保護対象VMの数に応じてバックアップアプライアンスのCPUおよびメモリリソースを増やします。サイジングの詳細については `HYCU User Guide <https://support.hycu.com/hc/en-us/sections/115001018365-Product-documentation>`_ を参照してください。
 
    アプライアンスに追加されたセカンダリディスクは、ローカルHYCUデータベースおよびメンテナンス用のデータディスクとして使用されます。 VMバックアップのデータは保存しません。
 
@@ -617,7 +617,7 @@ Nutanix Filesをソースとして追加
 
 Filesの保護は、ハイパーバイザーをHYCUに追加することと似ていますが、Filesをソースとして追加すると、Filesを実行しているNutanixクラスター上にHYCU Instanceが展開される点が異なります。 この追加インスタンスの目的は、HYCU Backup Controllerからファイルコピー操作をオフロードすることです。
 
-DHCPが有効になっているAHVクラスターの場合、Filesソースを追加すると、追加のHYCU Instanceを自動的に展開できます。 ESXiまたはDHCPが無効の環境では、HYCU Instanceを手動で展開する必要があります。（HYCU Backup Controllerの展開と同様）。手動による展開の詳細については`HYCU User Guide <https://support.hycu.com/hc/en-us/sections/115001018365-Product-documentation>`_を参照してください。
+DHCPが有効になっているAHVクラスターの場合、Filesソースを追加すると、追加のHYCU Instanceを自動的に展開できます。 ESXiまたはDHCPが無効の環境では、HYCU Instanceを手動で展開する必要があります。（HYCU Backup Controllerの展開と同様）。手動による展開の詳細については `HYCU User Guide <https://support.hycu.com/hc/en-us/sections/115001018365-Product-documentation>`_ を参照してください。
 
 #. **HYCU** ツールバーから、:fa:`cog` **> Sources** をクリックします。
 

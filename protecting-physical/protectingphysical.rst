@@ -85,7 +85,7 @@ HYCU 4.0以降のバージョンでは、物理Windowsサーバーを保護す�
 
    .. figure:: images/15.png
 
-#. **New VM Name**を入力し、 **Restore** を選択します。
+#. **New VM Name** を入力し、 **Restore** を選択します。
 
    .. figure:: images/16.png
 
