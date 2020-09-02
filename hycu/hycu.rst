@@ -4,7 +4,7 @@
 HYCU
 ----
 
-*この演習の推定所要時間は60分です。*
+**この演習の推定所要時間は60分です。**
 
 概要
 ++++++++
@@ -42,17 +42,19 @@ HYCUアプライアンスの構成
    - **vCPU(s)** - 4
    - **Number of Cores per vCPU** - 1
    - **Memory** - 4 GiB
-   - **+ Add New Disk**を選択
+   - **+ Add New Disk** を選択
 
      - **Operation** - Clone from Image Service
      - **Image** - hycu-\*.qcow2
-     - **Add**を選択
+
+     - **Add** を選択
+
    - **+ Add New Disk** を選択
 
      - **Operation** - Allocate on Storage Container
      - **Storage Container** - Default
      - **Size (GiB)** - 32
-     - **Add**を選択
+     - **Add** を選択
    - **CD-ROM** Diskを削除
    - **Add New NIC** を選択
 
@@ -61,7 +63,7 @@ HYCUアプライアンスの構成
 
 #. *Initials*\ **-HYCU** VMを選択し、 **Power on** をクリックします。
 
-   保護対象VMの数に応じてバックアップアプライアンスのCPUおよびメモリリソースを増やします。サイジングの詳細については`HYCU User Guide <https://support.hycu.com/hc/en-us/sections/115001018365-Product-documentation>`_を参照してください。
+   保護対象VMの数に応じてバックアップアプライアンスのCPUおよびメモリリソースを増やします。サイジングの詳細については `HYCU User Guide <https://support.hycu.com/hc/en-us/sections/115001018365-Product-documentation>`_ を参照してください。
 
    アプライアンスに追加されたセカンダリディスクは、ローカルHYCUデータベースおよびメンテナンス用のデータディスクとして使用されます。 VMバックアップのデータは保存しません。
 
@@ -320,7 +322,9 @@ HYCUポリシーは、データが失われる可能性のある最大許容期�
    - **Fast Restore** - Nutanixクラスターのローカルスナップショットを保持し、復元時に利用することで、迅速な復元を実現します。
    - **Auto-assignment** - Prism CentralのVM CategoriesもしくはvCenterのカスタム属性により、HYCUは新たに見つけた仮想マシンへ自動的に適切なポリシーを割り当てます。
 
-#. Nutanix Objectsへのアーカイブを構成するには、右上のメニューから"Archiving"をクリックして、アーカイブプロンプトを開きます。次に **+New** をクリックします。
+   HYCUは、管理者がRTOを定義する機能も特徴的です。 **Recover Within** を指定してターゲットで **Automatic** を選択すると、HYCUはバックアップを転送する適切なターゲットを計算します。 ターゲットのパフォーマンスは常に監視され、構成されたウィンドウ内でデータを復元できることが保証されます。 HYCUインスタンスに複数のターゲットが設定されている場合、サブセットを選択でき、HYCUは選択されたターゲットから適切に選択します。
+
+#. Nutanix Objectsへのアーカイブを構成するには、右上のメニューから"Archiving"をクリックして、アーカイブプロンプトを開きます。次に+Newをクリックします。
 
 #. アーカイブの名前を"Nutanix_Objects"にします。
 
@@ -386,11 +390,11 @@ Windows VMを作成し、Nutanix Prismを介してVMにNutanix Volume Groupを�
    - **iSCSI Target Name Prefix** - *Initials*\ -HYCU-Target
    - **Description** - VG attached to HYCUBackupTest VM
    - **+ Add New Disk** を選択
-
      - **Storage Container** - Default
      - **Size (GiB)** - 10
    - **Save** を選択
    - 新たに作成したVolume Groupをダブルクリック
+
    - **+ Attach to a VM** を選択
 
      - **Available VMs** - *Initials*\ -HYCUBackupTest の前に作成されたVMを選択
@@ -636,7 +640,7 @@ Nutanix Filesをソースとして追加
 
 Filesの保護は、ハイパーバイザーをHYCUに追加することと似ていますが、Filesをソースとして追加すると、Filesを実行しているNutanixクラスター上にHYCU Instanceが展開される点が異なります。 この追加インスタンスの目的は、HYCU Backup Controllerからファイルコピー操作をオフロードすることです。
 
-DHCPが有効になっているAHVクラスターの場合、Filesソースを追加すると、追加のHYCU Instanceを自動的に展開できます。 ESXiまたはDHCPが無効の環境では、HYCU Instanceを手動で展開する必要があります。（HYCU Backup Controllerの展開と同様）。手動による展開の詳細については`HYCU User Guide <https://support.hycu.com/hc/en-us/sections/115001018365-Product-documentation>`_を参照してください。
+DHCPが有効になっているAHVクラスターの場合、Filesソースを追加すると、追加のHYCU Instanceを自動的に展開できます。 ESXiまたはDHCPが無効の環境では、HYCU Instanceを手動で展開する必要があります。（HYCU Backup Controllerの展開と同様）。手動による展開の詳細については `HYCU User Guide <https://support.hycu.com/hc/en-us/sections/115001018365-Product-documentation>`_ を参照してください。
 
 #. **HYCU** ツールバーから、:fa:`cog` **> Sources** をクリックします。
 
@@ -720,7 +724,7 @@ Filesのバックアップと復元は、VM / VGワークフローと非常に�
    数回のクリックで、管理者またはエンドユーザーは、HYCUおよびCFT APIを使用して、個々のファイル、フォルダ、またはNutanix Files共有全体を簡単に復元できます。
 
 重要なポイント
-+++++++++
++++++++++++++
 
 **HYCU** について知っておくべき重要なことは何ですか？
 
