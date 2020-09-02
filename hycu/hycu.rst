@@ -164,7 +164,7 @@ HYCUを使用すると、Nutanixクラスター（Mineかどうかに関係な�
 
 .. note:: Nutanixをターゲットとして登録する前に、iSCSI Data Services IPが構成されていることを確認してください。
 
-   .. figure:: images/8.png
+.. figure:: images/8.png
 
 #. **HYCU** サイドバーから、:fa:`bars` **> Targets** をクリックします。
 
@@ -453,7 +453,7 @@ Windows VMを作成し、Nutanix Prismを介してVMにNutanix Volume Groupを�
 
      HYCUは、VMまたは共有フォルダにOwner（所有者）を割り当てることもできます。 この割り当てにより、セルフサービスポリシーの適用が可能になり、Active Directoryユーザーまたはグループが任意のリソースにアクセスできるようになります。 セルフサービスで使用可能な役割には、Viewer（読み取り専用）、Administrator、Backup Operator、およびRestore Operatorが含まれます。
 
-     .. figure:: images/19.png
+　 .. figure:: images/19.png
 
 #. *Initials*\ **-HYCUBackupTest** VMを選択し、 **(盾アイコン) Policies** をクリックします。
 
